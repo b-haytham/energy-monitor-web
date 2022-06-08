@@ -39,7 +39,14 @@ const Devices: NextPage<DeviceProps> = ({ devices }) => {
           height: 500
         }}
       >
-        <DevicesTable devices={devices} />
+        <DevicesTable 
+          devices={devices} 
+          onView={(id) => {
+            router.push("/admin/dash/devices/[id]", `/admin/dash/devices/${id}`)
+          }}
+          onEdit={(id) => {}}
+          onDelete={(id) => {}}
+        />
       </Paper>
     </Box>
   );

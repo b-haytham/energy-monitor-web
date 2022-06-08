@@ -7,9 +7,18 @@ import { Device } from "@api/types/device";
 
 interface DevicesTableProps {
   devices: Device[]
+  onView: (id: string) => void
+  onEdit: (id: string) => void
+  onDelete: (id: string) => void
 }
 
-const DevicesTable = ({ devices }: DevicesTableProps) => {
+const DevicesTable = ({ 
+  devices, 
+  onDelete, 
+  onEdit, 
+  onView 
+}: DevicesTableProps) => {
+  
   const columns: GridColDef[] = [
     { 
       field: 'name', 
@@ -64,9 +73,9 @@ const DevicesTable = ({ devices }: DevicesTableProps) => {
       renderCell: ({ row }) => {
         return (
           <TableOptionsMenu 
-            onView={() => console.log(row._id)}
-            onEdit={() => console.log(row._id)}
-            onDelete={() => console.log(row._id)}
+            onView={() => onView(row._id)}
+            onEdit={() => onEdit(row._id)}
+            onDelete={() => onDelete(row._id)}
           />
         );
       }

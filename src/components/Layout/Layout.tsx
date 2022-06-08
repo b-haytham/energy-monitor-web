@@ -8,10 +8,6 @@ interface LayoutProps {
 }
 const Layout = ({ children }: LayoutProps) => {
   const theme = useTheme();
-  
-  console.log(theme);
-
-  
   return (
     <Box
       sx={{
