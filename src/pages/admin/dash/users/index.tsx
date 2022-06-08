@@ -33,7 +33,6 @@ const Users: NextPage<UsersProps> = ({ users }) => {
       <Paper
         variant="outlined"
         sx={{ mt: 2, border: 'none', height: 500 }}
-      
       >
         <UsersTable users={users} />
       </Paper>
