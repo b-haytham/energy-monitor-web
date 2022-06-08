@@ -1,10 +1,12 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 
-import { Box, Button, Paper, Typography } from '@mui/material'
+import { Box, Button, Paper } from '@mui/material'
+import { useDisclosure } from '@mantine/hooks';
 
 import PageHeader from '@components/PageHeader';
 import SubscriptionsTable from '@components/tables/SubscriptionsTable';
+import { SubscriptionFormDialog } from '@components/forms/SubscriptionForm';
 
 import api from '@api';
 
@@ -17,8 +19,14 @@ interface SubscriptionsProps {
 
 const Subscriptions = ({ subscriptions }: SubscriptionsProps) => {
   const router = useRouter()
+  const [createSubscriptionOpen, createSubscriptionHandlers] = useDisclosure(false);
   return (
     <Box>
+      <SubscriptionFormDialog 
+        open={createSubscriptionOpen}
+        onClose={createSubscriptionHandlers.close}
+        onSubmit={async (_) => {}}
+      />
       <PageHeader 
         title="Subscriptions" 
         onBack={() => router.back()} 
@@ -26,6 +34,7 @@ const Subscriptions = ({ subscriptions }: SubscriptionsProps) => {
           <Button
             color="primary"
             variant="outlined"
+            onClick={createSubscriptionHandlers.open}
           >
             Add Subscription
           </Button>

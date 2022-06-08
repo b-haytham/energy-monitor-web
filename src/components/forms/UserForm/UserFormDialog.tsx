@@ -1,15 +1,15 @@
-import { Subscription } from "@api/types/subscription"
+import { User } from "@api/types/user"
 import { Dialog, DialogContent, DialogTitle } from "@mui/material"
-import SubscriptionForm from "./SubscriptionForm"
+import UserForm from "./UserForm"
 
-interface SubscriptionFormDialogProps {
+interface UserFormDialogProps {
   open: boolean
   onClose: () => void
   onSubmit: (data: any) => void
-  initialValues?: Subscription
+  initialValues?: User
 }
 
-const SubscriptionFormDialog = ({ open, onClose, onSubmit, initialValues }: SubscriptionFormDialogProps) => {
+const UserFormDialog = ({ open, onClose, onSubmit, initialValues }: UserFormDialogProps) => {
   return (
     <Dialog 
       open={open} 
@@ -17,9 +17,9 @@ const SubscriptionFormDialog = ({ open, onClose, onSubmit, initialValues }: Subs
       maxWidth="sm"
       fullWidth
     >
-      <DialogTitle>Create new subscription</DialogTitle>
+      <DialogTitle>Create device user</DialogTitle>
       <DialogContent>
-        <SubscriptionForm 
+        <UserForm
           onSubmit={onSubmit}
           onCancel={onClose}
           initialValues={initialValues}
@@ -29,4 +29,4 @@ const SubscriptionFormDialog = ({ open, onClose, onSubmit, initialValues }: Subs
   )
 }
 
-export default SubscriptionFormDialog
+export default UserFormDialog

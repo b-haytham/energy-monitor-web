@@ -26,9 +26,9 @@ export const fetchAll = createAsyncThunk<any, User, { rejectWithValue: any }>("g
       console.log('DEVICES >> ', devices);
       console.log('USERS >> ', users);
 
-      // thunkApi.dispatch(setSubscriptions(subscriptions));
-      // thunkApi.dispatch(setDevices(devices));
-      // thunkApi.dispatch(setUsers(users));
+      thunkApi.dispatch(setSubscriptions(subscriptions));
+      thunkApi.dispatch(setDevices(devices));
+      thunkApi.dispatch(setUsers(users));
 
     } else {
       const [
@@ -42,8 +42,8 @@ export const fetchAll = createAsyncThunk<any, User, { rejectWithValue: any }>("g
       console.log('DEVICES >> ', devices);
       console.log('USERS >> ', users);
 
-      // thunkApi.dispatch(setDevices(devices));
-      // thunkApi.dispatch(setUsers(users));
+      thunkApi.dispatch(setDevices(devices));
+      thunkApi.dispatch(setUsers(users));
     }
 
     thunkApi.dispatch(setGlobalLoading(false));

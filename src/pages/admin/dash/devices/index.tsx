@@ -9,6 +9,8 @@ import DevicesTable from '@components/tables/DevicesTable';
 import { Device } from '@api/types/device';
 import { handleServerSidePropsRejection } from '@utils/errors';
 import api from '@api';
+import { useDisclosure } from '@mantine/hooks';
+import { DeviceFormDialog } from '@components/forms/DeviceForm';
 
 interface DeviceProps {
   devices: Device[];
@@ -16,8 +18,14 @@ interface DeviceProps {
 
 const Devices: NextPage<DeviceProps> = ({ devices }) => {
   const router = useRouter()
+  const [createDeviceOpen, createDeviceHandlers] = useDisclosure(false);
   return (
     <Box>
+      <DeviceFormDialog
+        open={createDeviceOpen}
+        onClose={createDeviceHandlers.close}
+        onSubmit={async (_) => {}}
+      />
       <PageHeader 
         title='Devices'
         onBack={() => router.back()}
@@ -25,7 +33,7 @@ const Devices: NextPage<DeviceProps> = ({ devices }) => {
           <Button
             variant='outlined'
             color='primary'
-            onClick={() => {}}
+            onClick={createDeviceHandlers.open}
           >
             Create Device 
           </Button>

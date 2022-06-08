@@ -2,13 +2,15 @@ import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
 import { Box, Button, Paper } from '@mui/material'
+import { useDisclosure } from '@mantine/hooks';
 
 import PageHeader from '@components/PageHeader';
 import UsersTable from '@components/tables/UsersTable';
+import { UserFormDialog } from '@components/forms/UserForm';
 
+import api from '@api';
 import { User } from '@api/types/user';
 import { handleServerSidePropsRejection } from '@utils/errors';
-import api from '@api';
 
 interface UsersProps {
   users: User[]
@@ -16,8 +18,14 @@ interface UsersProps {
 
 const Users: NextPage<UsersProps> = ({ users }) => {
   const router = useRouter();
+  const [createUserOpen, createUserHandlers] = useDisclosure(false);
   return (
     <Box>
+      <UserFormDialog 
+        open={createUserOpen}
+        onClose={createUserHandlers.close}
+        onSubmit={async (_) => {}}
+      />
       <PageHeader
         title="Users" 
         onBack={() => router.back()} 
@@ -25,6 +33,7 @@ const Users: NextPage<UsersProps> = ({ users }) => {
           <Button
             color="primary"
             variant="outlined"
+            onClick={createUserHandlers.open}
           >
             Add User
           </Button>
