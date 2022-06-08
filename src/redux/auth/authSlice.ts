@@ -1,0 +1,69 @@
+import { User } from "@api/types/user";
+import { createSlice } from "@reduxjs/toolkit";
+import { login, logout } from "./actions";
+
+// Define a type for the slice state
+interface InitialState {
+  access_token: string | null;
+  user: User | null;
+  loading: boolean;
+  errors: string[];
+}
+
+// Define the initial state using that type
+const initialState: InitialState = {
+  access_token: null,
+  user: null,
+  loading: false,
+  errors: [],
+};
+
+const authSlice = createSlice({
+  name: "auth",
+  // `createSlice` will infer the state type from the `initialState` argument
+  initialState,
+  reducers: {
+    authClearErrors: (state) => {
+      state.errors = [];
+    },
+    authClearState: (state) => {
+      state.access_token = null;
+      state.user = null;
+      state.loading = false;
+      state.errors = [];
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(login.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.user;
+      state.access_token = action.payload.access_token;
+      state.errors = []
+    });
+    builder.addCase(login.rejected, (state, action) => {
+      state.loading = false;
+      //@ts-ignore
+      state.errors = action.payload || [];
+    });
+
+    builder.addCase(logout.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(logout.fulfilled, (state) => {
+      state.loading = false;
+      state.user = null;
+      state.access_token = null;
+    });
+    builder.addCase(logout.rejected, (state) => {
+      state.loading = false;
+      state.errors = [];
+    });
+  },
+});
+
+export const { authClearErrors, authClearState } = authSlice.actions;
+
+export default authSlice.reducer;
