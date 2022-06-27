@@ -16,8 +16,9 @@ const UserFormDialog = ({ open, onClose, onSubmit, initialValues }: UserFormDial
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      PaperProps={{ sx: { borderRadius: 2 } }}
     >
-      <DialogTitle>Create device user</DialogTitle>
+      <DialogTitle>{initialValues ? "Update User" : "Create User"}</DialogTitle>
       <DialogContent>
         <UserForm
           onSubmit={onSubmit}

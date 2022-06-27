@@ -21,10 +21,22 @@ const HorizontalScroll = ({ children, spacing, ContainerProps, ChildProps }: Hor
       }}
       {...ContainerProps}
     > 
-    <div
+    <Box
       style={{
         overflow: 'auto',
         whiteSpace: 'nowrap',
+      }}
+      sx={{
+        '&::-webkit-scrollbar': {
+          height: 4,
+        },
+        '&::-webkit-scrollbar-track': {
+          '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: (theme) => theme.palette.primary.light,
+          borderRadius: 8
+        }
       }}
     >
       {Array.isArray(children) && children.map((child, idx) => (
@@ -40,7 +52,7 @@ const HorizontalScroll = ({ children, spacing, ContainerProps, ChildProps }: Hor
           {child}
         </Box>
         )) }
-     </div>
+     </Box>
     </Box>
   )
 }

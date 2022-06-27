@@ -52,7 +52,7 @@ export namespace subscriptions {
 
   export const update = async (id: string, params: UpdateRequest) => {
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         `${base_url}/subscriptions/${id}`,
         params
       );

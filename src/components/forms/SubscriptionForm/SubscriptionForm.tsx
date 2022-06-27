@@ -8,7 +8,9 @@ import {
   FormControl, 
   Select, 
   InputLabel, 
-  MenuItem
+  MenuItem,
+  FormControlLabel,
+  Checkbox
 } from "@mui/material";
 import { useAppSelector } from "@redux/store";
 
@@ -22,13 +24,18 @@ interface SubscriptionFormProps {
 
 const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFormProps) => {
   const users = useAppSelector((state) => {
-    return state.users.users
-      .filter((user) => user.role.includes("user") /*&& !user.subscription */ )
+    if(initialValues) {
+      return state.users.users.filter((user) => user.role.includes('user'));
+    }else {
+      return state.users.users
+      .filter((user) => user.role.includes("user") && !user.subscription)
+    }
   });
-  console.log(users);
+
   const { register, handleSubmit, watch, setValue } = useForm({
       defaultValues: {
-        admin: initialValues?.admin ?? "" ,
+        // @ts-ignore
+        admin: initialValues?.admin._id ?? "" ,
         company_info: {
           name: initialValues?.company_info?.name ?? "",
           email: initialValues?.company_info?.email ?? "",
@@ -40,7 +47,8 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
             zip: initialValues?.company_info?.address?.zip ?? 0,
             country: "Tunisie"
           }
-        }
+        },
+        blocked: initialValues?.blocked ?? false,
       }
   });
   
@@ -66,6 +74,7 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
           <Select
             id="admin"
             labelId="admin-label"
+            label="Administrateur"
             value={watch("admin")}
             onChange={(e) => setValue("admin", e.target.value)}
           >
@@ -178,8 +187,24 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
           />
         </Stack>
 
-        <Divider sx={{ mb: 1 }} />
+        <Divider sx={{ mt: 1  }} />
 
+        {initialValues && (
+          <>
+            <FormControlLabel
+              value="end"
+              control={
+                <Checkbox 
+                  checked={watch('blocked')} 
+                  onChange={(e) => setValue("blocked", e.target.checked)} 
+                />
+              }
+              label="Blocked"
+              labelPlacement="end"
+            /> 
+            <Divider sx={{ mb: 1 }} />
+          </>
+        )}
         <Stack spacing={1} direction='row'> 
           <Button
             variant="outlined" 

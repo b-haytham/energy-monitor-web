@@ -16,8 +16,9 @@ const SubscriptionFormDialog = ({ open, onClose, onSubmit, initialValues }: Subs
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      PaperProps={{ sx: { borderRadius: 2 } }}
     >
-      <DialogTitle>Create new subscription</DialogTitle>
+      <DialogTitle>{initialValues ? "Update Subscription": "Create Subscription"}</DialogTitle>
       <DialogContent>
         <SubscriptionForm 
           onSubmit={onSubmit}

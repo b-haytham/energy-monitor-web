@@ -15,9 +15,15 @@ import { useEffect } from 'react';
 import socket from 'src/socket';
 import { fetchAll } from '@redux/global/actions';
 import { User } from '@api/types/user';
+import { deviceHandleNotification } from '@redux/devices/devicesSlice';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+import NextNProgress from "nextjs-progressbar";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
+
+const queryClient = new QueryClient();
 
 interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
@@ -46,6 +52,7 @@ export default function MyApp(props: MyAppProps) {
 
     socket.on('device/notification', (data) => {
       console.log('WS_DEVICE_NOTIFICATION', data);
+      store.dispatch(deviceHandleNotification(data));
     })
 
     return () => {
@@ -68,15 +75,23 @@ export default function MyApp(props: MyAppProps) {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider theme={theme}>
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <NextNProgress
+              color={theme.palette.primary.main}
+              startPosition={0.3}
+              stopDelayMs={200}
+              height={3}
+              showOnShallow={true}
+            />           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
-            {router.pathname.includes('dash') ? (
-              <Layout>
+            <QueryClientProvider client={queryClient}>
+              {router.pathname.includes('dash') ? (
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              ): (
                 <Component {...pageProps} />
-              </Layout>
-            ): (
-              <Component {...pageProps} />
-            )}
+              )}
+            </QueryClientProvider>
           </ThemeProvider>
         </PersistGate>
       </Provider>

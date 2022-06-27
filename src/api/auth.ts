@@ -16,6 +16,10 @@ export type RegisterRequest = Pick<
   "first_name" | "last_name" | "email" | "phone" | "role"
 > & { password: string };
 
+export type CreateDeviceToken = {
+  device: string
+}
+
 export namespace auth {
   export const login = async (params: LoginRequest) => {
     try {
@@ -40,7 +44,7 @@ export namespace auth {
       const { data } = await axios.get(`${base_url}/auth/me`);
       return data as User;
     } catch (error) {
-      throw new ApiError(error);
+      throw new ApiError(error)
     }
   };
 
@@ -52,4 +56,14 @@ export namespace auth {
       throw new ApiError(error);
     }
   };
+
+  export const createDeviceToken = async (device: string) => {
+    try {
+      const { data } = await axios.post(`${base_url}/auth/devices/token-create`, { device });
+      return data as { access_token: string };
+    } catch (error) {
+      throw new ApiError(error);
+    }
+  }
+  
 }

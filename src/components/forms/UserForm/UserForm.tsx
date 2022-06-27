@@ -1,3 +1,4 @@
+import { Subscription } from "@api/types/subscription";
 import { User } from "@api/types/user";
 import { 
   Box, 
@@ -25,19 +26,24 @@ interface UserFormProps {
 
 const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
   const subscriptions = useAppSelector(state => state.subscriptions.subscriptions);
+  const loggedInUser = useAppSelector((state) => state.auth.user);
   const { register, handleSubmit, watch, setValue } = useForm({
       defaultValues: {
         first_name: initialValues?.first_name ?? "",
         last_name: initialValues?.last_name ?? "",
         email: initialValues?.email ?? "",
         password: "",
-        subscription: initialValues ? (initialValues.subscription as string) : "",
+        subscription: initialValues ? (initialValues.subscription as Subscription)._id : "",
         role: initialValues?.role ?? "user",
         phone: initialValues?.phone ?? "",
       }
   });
   
   const onSubmitForm = (data: any) => {
+    if(data.role !== 'user' && !initialValues) {
+      data.subscription = null
+    }
+    console.log('USER FORM>>', data)
     onSubmit(data);
   }
 
@@ -45,12 +51,15 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
   return (
     <Box sx={{ mt: 1 }}>
       <form onSubmit={handleSubmit(onSubmitForm)}>
-
-        {/*<FormControl fullWidth size="small" sx={{ mb: 1 }}>
+        {loggedInUser && 
+          loggedInUser.role.includes('admin') && 
+          watch("role") == 'user' && 
+          <><FormControl fullWidth size="small" sx={{ mb: 1 }}>
           <InputLabel id="admin-label">Subscription</InputLabel>
           <Select
             id="subscription"
             labelId="admin-label"
+            label="Subscription"
             value={watch("subscription")}
             onChange={(e) => setValue("subscription", e.target.value)}
           >
@@ -63,9 +72,9 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
               </MenuItem>
             ))}
           </Select>
-        </FormControl> */}
-
+        </FormControl>
         <Divider sx={{ mb: 1 }} />
+        </>}
 
         <TextField 
           id="first_name"
@@ -100,7 +109,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           {...register('email' )}
         />
 
-        <TextField 
+        {!initialValues && <TextField 
           id="password"
           label="Password"
           variant="outlined" 
@@ -110,7 +119,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           size="small"
           sx={{ mb: 1 }}
           {...register('password' )}
-        />
+        />}
 
         <TextField 
           id="phone"

@@ -12,24 +12,54 @@ import api from '@api';
 
 import { Subscription } from '@api/types/subscription';
 import { handleServerSidePropsRejection } from '@utils/errors';
+import { useSubscriptions } from 'src/hooks/useSubscriptions';
+import { useState } from 'react';
 
 interface SubscriptionsProps {
   subscriptions: Subscription[]
 }
 
-const Subscriptions = ({ subscriptions }: SubscriptionsProps) => {
+const Subscriptions = ({ subscriptions: serverSubscriptions }: SubscriptionsProps) => {
   const router = useRouter()
+  const { subscriptions, handlers } = useSubscriptions(serverSubscriptions);
   const [createSubscriptionOpen, createSubscriptionHandlers] = useDisclosure(false);
+
+  const [subscriptionToUpdate, setSubscriptionToUpdate] = useState<Subscription | null>(null)
+
   return (
     <Box>
-      <SubscriptionFormDialog 
+      <SubscriptionFormDialog
         open={createSubscriptionOpen}
         onClose={createSubscriptionHandlers.close}
-        onSubmit={async (_) => {}}
+        onSubmit={async (data) => {
+          try {
+            const subscription = await handlers.create(data);
+            console.log(subscription);
+            createSubscriptionHandlers.close();
+          } catch (error) {
+            console.error(error);
+          }
+        }}
       />
-      <PageHeader 
-        title="Subscriptions" 
-        onBack={() => router.back()} 
+
+      {subscriptionToUpdate && <SubscriptionFormDialog
+        open={true}
+        onClose={() => setSubscriptionToUpdate(null)}
+        initialValues={subscriptionToUpdate}
+        onSubmit={async (data) => {
+          console.log(data);
+          try {
+            await handlers.update({_id: subscriptionToUpdate._id, ...data}); 
+            setSubscriptionToUpdate(null);
+          } catch (error) {
+            console.error(error);
+          }
+        }}
+      />}
+
+      <PageHeader
+        title="Subscriptions"
+        onBack={() => router.back()}
         right={
           <Button
             color="primary"
@@ -41,7 +71,17 @@ const Subscriptions = ({ subscriptions }: SubscriptionsProps) => {
         }
       />
       <Paper variant="outlined" sx={{ mt: 2, height: 500, border: 'none' }}>
-        <SubscriptionsTable subscriptions={subscriptions} />
+        <SubscriptionsTable
+          subscriptions={subscriptions}
+          onView={(id) => {
+            router.push('/admin/dash/subscriptions/[id]', `/admin/dash/subscriptions/${id}`);
+          }}
+          onEdit={(id) => { 
+            const subscription = subscriptions.find(sub => sub._id == id);
+            setSubscriptionToUpdate(subscription || null);
+          }}
+          onDelete={(id) => { }}
+        />
       </Paper>
     </Box>
   )

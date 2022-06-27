@@ -6,10 +6,13 @@ import TableOptionsMenu from "../TableOptionsMenu/TableOptionsMenu";
 import { User } from "@api/types/user";
 
 interface UsersTableProps {
-  users: User[]
+  users: User[],
+  onView: (id: string) => void
+  onEdit: (id: string) => void
+  onDelete: (id: string) => void
 }
 
-const UsersTable = ({ users }: UsersTableProps) => {
+const UsersTable = ({ users, onEdit, onView, onDelete }: UsersTableProps) => {
   const columns: GridColDef[] = [
     { 
       field: 'first_name', 
@@ -72,9 +75,9 @@ const UsersTable = ({ users }: UsersTableProps) => {
       renderCell: ({ row }) => {
         return (
           <TableOptionsMenu 
-            onView={() => console.log(row._id)}
-            onEdit={() => console.log(row._id)}
-            onDelete={() => console.log(row._id)}
+            onView={() => onView(row._id)}
+            onEdit={() => onEdit(row._id)}
+            onDelete={() => onDelete(row._id)}
           />
         );
       }

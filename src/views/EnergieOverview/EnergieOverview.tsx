@@ -1,12 +1,12 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Grid, GridProps, Paper, Typography } from "@mui/material";
 
-interface EnergieOverviewProps {
+interface EnergieOverviewProps extends GridProps {
 
 }
 
-const EnergieOverview = ({} : EnergieOverviewProps) => {
+const EnergieOverview = ({...rest} : EnergieOverviewProps) => {
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} {...rest}>
       <Grid item xs={12} md={3}>
         <Paper variant="outlined" sx={{ minHeight: 100, borderRadius: 3, p: 2 }}>
           <Typography variant="h6" color={"grey.900"}>

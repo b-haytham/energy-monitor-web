@@ -16,8 +16,9 @@ const DeviceFormDialog = ({ open, onClose, onSubmit, initialValues }: DeviceForm
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      PaperProps={{ sx: { borderRadius: 2 } }}
     >
-      <DialogTitle>Create device subscription</DialogTitle>
+      <DialogTitle>{initialValues ? "Update Device" : "Create Device"}</DialogTitle>
       <DialogContent>
         <DeviceForm
           onSubmit={onSubmit}

@@ -1,7 +1,15 @@
+const production = process.env.NODE_ENV == "production";
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
-  swcMinify: true,
+  compiler: {
+    removeConsole: production,
+    emotion: true,
+  },
+  onDemandEntries: {
+    maxInactiveAge: 15 * 1000,
+    pagesBufferLength: 2,
+  },
   publicRuntimeConfig: {
     BASE_URL: process.env.BASE_URL,
     WS_URL: process.env.WS_URL,

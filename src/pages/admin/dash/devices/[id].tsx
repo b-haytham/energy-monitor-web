@@ -1,75 +1,122 @@
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps, NextPage } from 'next';
 
-import { Box, Button, Grid, Paper, Typography } from '@mui/material'
+import { Box, IconButton, Paper, Stack, Typography } from '@mui/material'
+
+import { ArrowDownwardOutlined, ArrowUpwardOutlined, EditOutlined } from '@mui/icons-material';
 
 import PageHeader from '@components/PageHeader';
+import ValueCard from '@components/cards/ValueCard';
+import EnergieConsumptionChart from '@components/charts/EnergieConsumptionChart';
+import PowerChart from '@components/charts/PowerChart';
+import ChartContainer from '@views/ChartContainer';
+import HorizontalScroll from '@components/HorizontalScroll';
+
+import { useDeviceDetails } from 'src/hooks/useDeviceDetails';
 
 import { handleServerSidePropsRejection } from '@utils/errors';
 
+import socket from 'src/socket';
+
 import api from '@api';
 import { Device } from '@api/types/device';
-import ChartContainer from '@views/ChartContainer';
-import HorizontalScroll from '@components/HorizontalScroll';
+import { useDisclosure } from '@mantine/hooks';
+import { DeviceFormDialog } from '@components/forms/DeviceForm';
 
 interface DeviceDetailProps {
   device: Device
 }
 
-const DeviceDetail: NextPage<DeviceDetailProps> = ({ device }) => {
+const DeviceDetail: NextPage<DeviceDetailProps> = ({ device: serverDevice }) => {
   const router = useRouter();
+  const { device, subscription, values, handlers } = useDeviceDetails(serverDevice); 
+  const [token, setToken] = useState<string | null>(null)
+  const [showMore, setShowMore] = useState(false); 
+  
+
+  const [updateOpen, updateHandlers] = useDisclosure(false);
+
+  const fetchToken = async() => {
+    try {
+      const data = await api.auth.createDeviceToken(device._id);
+      setToken(data.access_token);
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchToken()
+    socket.on(`notification/${device._id}`, (data) => {
+      console.log(`WS_DEVICE [${device._id}]`, data);
+    })
+
+    return () => {
+      socket.off(`notification/${device._id}`)
+    }
+  }, [])
+
   return (
     <Box>
+      <DeviceFormDialog 
+        open={updateOpen}
+        onClose={updateHandlers.close}
+        initialValues={device}
+        onSubmit={(values) => {
+          console.log(values);
+        }}
+      />
       <PageHeader
         title={device.name}
         onBack={() => router.back()}
         right={
-          <Button
-            variant='outlined'
-            color='primary'
-            onClick={() => {}}
-          >
-            Edit Device 
-          </Button>
+          <Stack direction={"row"} spacing={2}>
+            <IconButton size={'small'} onClick={updateHandlers.open}>
+              <EditOutlined />
+            </IconButton>
+
+            <IconButton size={'small'} onClick={() => setShowMore((prev) => !prev)}>
+              {showMore ? <ArrowUpwardOutlined /> : <ArrowDownwardOutlined />}
+            </IconButton>
+          </Stack>
         }
       />
+      
+      {showMore && (
+        <Paper variant="outlined" sx={{ borderRadius: 2, mt: 2, p: 2 }}>
+          <Typography>ID {device._id}</Typography> 
+          <Typography>Name {device.name}</Typography> 
+          <Typography>Description {device.description}</Typography> 
+          <Typography>Subscription {subscription.company_info.name}</Typography> 
+          <Typography>Values {values.length}</Typography> 
+          <Typography sx={{ maxWidth: { xs: 300, md: 700 }  }} style={{ wordWrap: 'break-word' }}>Token {token ?? ""}</Typography> 
+        </Paper>
+      )}
+
       <HorizontalScroll 
         spacing={2}
         ContainerProps={{
           sx: { mt: 2 }
         }}
       >
-        <Paper
-          variant='outlined'
-          sx={{ 
-            p: 2, 
-            width: 700, 
-            height: 150,
-            borderRadius: 2,
-            mb: 1,
-          }}
-        >
-
-        </Paper>
-        <Paper
-          variant='outlined'
-          sx={{ 
-            p: 2, 
-            width: 700, 
-            height: 150,
-            borderRadius: 2,
-            mb: 1,
-          }}
-        >
-
-        </Paper>
+        {values.map(value => (
+          <ValueCard 
+            key={value._id}
+            value={value}
+          />
+        ))}
       </HorizontalScroll> 
       <ChartContainer 
         sx={{ height: 500, mt: 2 }}
-      />
+      >
+        <PowerChart subscription={subscription._id} device={device._id} />
+      </ChartContainer>
       <ChartContainer 
-        sx={{ height: 500, mt: 2 }}
-      />
+        sx={{ height: 500, my: 2 }}
+      >
+        <EnergieConsumptionChart subscription={subscription._id} device={device._id} />
+      </ChartContainer>
     </Box>
   );
 }

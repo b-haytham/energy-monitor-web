@@ -1,4 +1,5 @@
 import { Subscription } from "@api/types/subscription";
+import { User } from "@api/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   createSubscription,
@@ -27,6 +28,17 @@ const subscriptionsSlice = createSlice({
   reducers: {
     setSubscriptions: (state, action: PayloadAction<Subscription[]>) => {
       state.subscriptions = action.payload
+    },
+
+    addUser(state, action: PayloadAction<{id: string; user: User}>) {
+      const subscription = state.subscriptions.find(sub =>sub._id == action.payload.id);
+      if(subscription) {
+        //@ts-ignore
+        subscription.users.push({
+          ...action.payload.user,
+          subscription: (action.payload.user.subscription as Subscription)._id
+        });
+      }
     },
 
     subscriptionsClearErrors: (state) => {
@@ -87,6 +99,7 @@ export const {
   subscriptionsClearErrors, 
   subscriptionsClearState, 
   setSubscriptions,
+  addUser,
 } = subscriptionsSlice.actions;
 
 export default subscriptionsSlice.reducer;

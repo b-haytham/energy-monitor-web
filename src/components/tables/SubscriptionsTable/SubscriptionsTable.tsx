@@ -7,9 +7,12 @@ import { Subscription } from "@api/types/subscription";
 
 interface SubscriptionsTableProps {
   subscriptions: Subscription[]
+  onView: (id: string) => void;
+  onEdit: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
-const SubscriptionsTable = ({ subscriptions }: SubscriptionsTableProps) => {
+const SubscriptionsTable = ({ subscriptions, onView, onEdit, onDelete }: SubscriptionsTableProps) => {
   const columns: GridColDef[] = [
     { 
       field: 'name', 
@@ -82,9 +85,9 @@ const SubscriptionsTable = ({ subscriptions }: SubscriptionsTableProps) => {
       renderCell: ({ row }) => {
         return (
           <TableOptionsMenu 
-            onView={() => console.log(row._id)}
-            onEdit={() => console.log(row._id)}
-            onDelete={() => console.log(row._id)}
+            onView={() => onView(row._id)}
+            onEdit={() => onEdit(row._id)}
+            onDelete={() => onDelete(row._id)}
           />
         );
       }

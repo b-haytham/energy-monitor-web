@@ -38,7 +38,7 @@ export namespace devices {
 
   export const update = async (id: string, params: UpdateRequest) => {
     try {
-      const { data } = await axios.post(`${base_url}/devices/${id}`, params);
+      const { data } = await axios.put(`${base_url}/devices/${id}`, params);
 
       return data as Device;
     } catch (error) {

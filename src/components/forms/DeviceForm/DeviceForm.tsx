@@ -1,7 +1,24 @@
-import { Device } from "@api/types/device";
-import { Box, Button, Divider, FormControl, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Stack, TextField } from "@mui/material";
-import { useAppSelector } from "@redux/store";
+import { 
+  Box, 
+  Button, 
+  Checkbox, 
+  Divider, 
+  FormControl, 
+  FormControlLabel, 
+  FormLabel, 
+  InputLabel, 
+  MenuItem, 
+  Radio, 
+  RadioGroup, 
+  Select, 
+  Stack, 
+  TextField 
+} from "@mui/material";
 import { useForm } from "react-hook-form";
+
+import { useAppSelector } from "@redux/store";
+import { Subscription } from "@api/types/subscription";
+import { Device } from "@api/types/device";
 
 interface DeviceFormProps {
   onSubmit: (data: any) => void;
@@ -16,8 +33,9 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
         name: initialValues?.name ?? "",
         description: initialValues?.description ?? "",
         type: initialValues?.type  ?? "TRI",
-        subscription: initialValues ?  (initialValues.subscription as string) : "",
-      }
+        subscription: initialValues ? (initialValues.subscription as Subscription)._id :  "",
+        blocked: initialValues?.blocked ?? false
+      } 
   });
   
   const onSubmitForm = (data: any) => {
@@ -34,6 +52,7 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
           <Select
             id="subscription"
             labelId="admin-label"
+            label="Subscription"
             value={watch("subscription")}
             onChange={(e) => setValue("subscription", e.target.value)}
           >
@@ -89,7 +108,24 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
           </RadioGroup>
         </FormControl>
 
-        <Divider sx={{ mb: 1 }} />
+        <Divider sx={{ mt: 1 }} />
+
+        {initialValues && (
+          <>
+            <FormControlLabel
+              value="end"
+              control={
+                <Checkbox 
+                  checked={watch('blocked')} 
+                  onChange={(e) => setValue("blocked", e.target.checked)} 
+                />
+              }
+              label="Blocked"
+              labelPlacement="end"
+            /> 
+            <Divider sx={{ mb: 1 }} />
+          </>
+        )}
 
         <Stack spacing={1} direction='row'> 
           <Button
