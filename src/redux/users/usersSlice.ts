@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { User } from "@api/types/user";
-import { createUser } from "./actions";
+import { createUser, deleteUser } from "./actions";
 
 // Define a type for the slice state
 interface InitialState {
@@ -33,6 +33,14 @@ const usersSlice = createSlice({
       state.users = action.payload;
     },
 
+    deleteUsers: (state, action: PayloadAction<string[]>) => {
+      state.users = state.users.filter(u => !action.payload.includes(u._id))
+    },
+
+    // deleteUser: (state, action: PayloadAction<string>) => {
+    //   state.users = state.users.filter(u => u._id !== action.payload);
+    // },
+
     usersClearErrors: (state) => {
       state.errors = [];
     },
@@ -56,6 +64,19 @@ const usersSlice = createSlice({
       const errors = action.payload || [];
       state.errors = [...state.errors, ...errors];
     });
+
+    builder.addCase(deleteUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.users = state.users.filter(u => u._id !== action.payload._id);
+    });
+    builder.addCase(deleteUser.rejected, (state, action) => {
+      state.loading = false;
+      const errors = action.payload || [];
+      state.errors = [...state.errors, ...errors];
+    });
   },
 });
 
@@ -63,6 +84,8 @@ export const {
   usersClearErrors,
   usersClearState,
   setUsers,
+  // deleteUser,
+  deleteUsers,
   setUserSubscription,
 } = usersSlice.actions;
 

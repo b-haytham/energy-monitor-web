@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material/styles';
+import { components } from './components';
 import typography from './typography';
 // Create a theme instance.
 const theme = createTheme({
@@ -11,6 +12,7 @@ const theme = createTheme({
     },
   },
   typography,
+  components,
 });
 
 export default theme;

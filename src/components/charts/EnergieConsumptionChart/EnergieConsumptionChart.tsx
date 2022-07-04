@@ -40,7 +40,6 @@ const EnergieConsumptionChart = ({ subscription, device }: EnergieConsumptionCha
     ({ queryKey }) => api.data.energie({ s: subscription, d: device, t: queryKey[1] as any })
   )
 
-  
   return (
     <Box style={{ height: 400,  position: 'relative' }}>
       <Stack direction={"row"} justifyContent={"space-between"}>
@@ -55,37 +54,34 @@ const EnergieConsumptionChart = ({ subscription, device }: EnergieConsumptionCha
               { label: '1 Year', value: '1y' },
             ]}
             onChange={(value) => {
-              console.log((value));
               setChartTime(value);
             }}
           />
         </Stack>
       </Stack>
-      <Bar
-        options={{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top' as const,
+      <div style={{ position: 'relative', height: '100%', width: '99%' }}>
+        <Bar
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top' as const,
+              },
             },
-            // title: {
-            //   display: true,
-            //   text: 'Chart.js Bar Chart',
-            // },
-          },
-        }}
-        data={{
-          labels: energieData ? energieData.slice(1).map((d) => d._id) : [],
-          datasets: [
-            {
-              label: "Energie (kw/h)",
-              data: energieData ? energieData.slice(1).map((d) => d.consumed) : [],
-              backgroundColor: theme.palette.primary.main,
-            },
-          ],
-        }}
-      />
+          }}
+          data={{
+            labels: energieData ? energieData.slice(1).map((d) => d._id) : [],
+            datasets: [
+              {
+                label: "Energie (kw/h)",
+                data: energieData ? energieData.slice(1).map((d) => d.consumed) : [],
+                backgroundColor: theme.palette.primary.main,
+              },
+            ],
+          }}
+        />
+      </div>
     </Box>
   )
 }

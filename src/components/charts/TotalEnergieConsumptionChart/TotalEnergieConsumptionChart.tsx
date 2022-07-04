@@ -71,56 +71,41 @@ const EnergieConsumptionChart = ({ devices, subscription }: EnergieConsumptionCh
               { label: '1 Year', value: '1y' },
             ]}
             onChange={(value) => {
-              console.log((value));
               setChartTime(value);
             }}
           />
         </Stack>
       </Stack>
-      <Bar
-        options={{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top' as const,
+      <div style={{ position: 'relative', height: '100%', width: '99%' }}>
+        <Bar
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top' as const,
+              },
             },
-            // title: {
-            //   display: true,
-            //   text: 'Chart.js Bar Chart',
-            // },
-          },
-          scales: {
-            x: {
-              stacked: true,
+            scales: {
+              x: {
+                stacked: true,
+              },
+              y: {
+                stacked: true,
+              },
             },
-            y: {
-              stacked: true,
-            },
-          },
-        }}
-        data={{
-          labels,
-          //@ts-ignore
-          datasets: energieData?.map((entry, idx) => ({ 
-            label: devices[idx] ? devices[idx].name : [], 
-            data: entry.slice(1).map(d =>d.consumed),
-            backgroundColor: colorArray[idx]
-          })) ?? []
-          // datasets: [
-          //   {
-          //     label: 'Dataset 1',
-          //     data: labels.map(() => fakeNumber(0, 1000)),
-          //     backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          //   },
-          //   {
-          //     label: 'Dataset 2',
-          //     data: labels.map(() => fakeNumber(0,1000)),
-          //     backgroundColor: 'rgba(53, 162, 235, 0.5)',
-          //   },
-          // ],
-        }}
-      />
+          }}
+          data={{
+            labels,
+            //@ts-ignore
+            datasets: energieData?.map((entry, idx) => ({ 
+              label: devices[idx] ? devices[idx].name : [], 
+              data: entry.slice(1).map(d =>d.consumed),
+              backgroundColor: colorArray[idx]
+            })) ?? []
+          }}
+        />
+      </div>
     </Box>
   )
 }

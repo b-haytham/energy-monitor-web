@@ -44,4 +44,14 @@ export namespace users {
       throw new ApiError(error);
     }
   };
+
+  export const remove = async (id: string) => {
+    try {
+      const { data } = await axios.delete(`${base_url}/users/${id}`);
+
+      return data as User;
+    } catch (error) {
+      throw new ApiError(error);
+    }
+  };
 }

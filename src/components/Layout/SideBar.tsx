@@ -86,11 +86,11 @@ const SideBar = ({}: SideBarProps) => {
 
           <SideBarListItem
             selected={router.pathname.includes("dash") && router.pathname.includes("rapports")}
-            text="Rapports"
+            text="Reports"
             icon={<InsightsOutlinedIcon />}
             onClick={() => {
               if(userRole && userRole.includes("admin")) {
-                router.push("/admin/dash/rapports");
+                router.push("/admin/dash/reports");
               } else {
                 router.push("/dash/rapports");
               }

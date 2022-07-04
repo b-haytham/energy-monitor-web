@@ -14,6 +14,8 @@ import { Subscription } from '@api/types/subscription';
 import { handleServerSidePropsRejection } from '@utils/errors';
 import { useSubscriptions } from 'src/hooks/useSubscriptions';
 import { useState } from 'react';
+import ConfirmDelete from '@components/forms/ConfirmDelete';
+import { useSnackbar } from 'notistack';
 
 interface SubscriptionsProps {
   subscriptions: Subscription[]
@@ -21,13 +23,35 @@ interface SubscriptionsProps {
 
 const Subscriptions = ({ subscriptions: serverSubscriptions }: SubscriptionsProps) => {
   const router = useRouter()
+  const { enqueueSnackbar } = useSnackbar();
   const { subscriptions, handlers } = useSubscriptions(serverSubscriptions);
   const [createSubscriptionOpen, createSubscriptionHandlers] = useDisclosure(false);
 
   const [subscriptionToUpdate, setSubscriptionToUpdate] = useState<Subscription | null>(null)
+  const [subscriptionToDelete, setSubscriptionToDelete] = useState<Subscription | null>(null)
 
   return (
-    <Box>
+    <Box sx={{  height: 1, display: 'flex', flexDirection: 'column' }}>
+      {subscriptionToDelete && (
+        <ConfirmDelete 
+          title="Delete Subscription"
+          content={`You're about to delete this subscription. 
+            all users and devices and devices data will be deleted as well`}
+          open={Boolean(subscriptionToDelete)}
+          onClose={() => setSubscriptionToDelete(null)}
+          onSubmit={async () => {
+            try {
+              const subscription = await handlers.remove(subscriptionToDelete._id);
+              console.log('DELETED SUBSCRIPTION >>>', subscription);
+              setSubscriptionToDelete(null)
+              enqueueSnackbar("Subscription successfully deleted.", { variant: 'success' })
+            } catch (error) {
+              console.error(error);
+              enqueueSnackbar("Failed to delete subscription.", { variant: 'error' })
+            }
+          }}
+        />
+      )}
       <SubscriptionFormDialog
         open={createSubscriptionOpen}
         onClose={createSubscriptionHandlers.close}
@@ -36,8 +60,10 @@ const Subscriptions = ({ subscriptions: serverSubscriptions }: SubscriptionsProp
             const subscription = await handlers.create(data);
             console.log(subscription);
             createSubscriptionHandlers.close();
+            enqueueSnackbar("Subscription successfully created.", { variant: 'success' })
           } catch (error) {
             console.error(error);
+            enqueueSnackbar("Failed to create subscription.", { variant: 'error' })
           }
         }}
       />
@@ -51,8 +77,10 @@ const Subscriptions = ({ subscriptions: serverSubscriptions }: SubscriptionsProp
           try {
             await handlers.update({_id: subscriptionToUpdate._id, ...data}); 
             setSubscriptionToUpdate(null);
+            enqueueSnackbar("Subscription successfully updated.", { variant: 'success' })
           } catch (error) {
             console.error(error);
+            enqueueSnackbar("Failed to update subscription.", { variant: 'error' })
           }
         }}
       />}
@@ -70,7 +98,7 @@ const Subscriptions = ({ subscriptions: serverSubscriptions }: SubscriptionsProp
           </Button>
         }
       />
-      <Paper variant="outlined" sx={{ mt: 2, height: 500, border: 'none' }}>
+      <Paper variant="outlined" sx={{ my: 2, flex: 1, border: 'none' }}>
         <SubscriptionsTable
           subscriptions={subscriptions}
           onView={(id) => {
@@ -80,7 +108,10 @@ const Subscriptions = ({ subscriptions: serverSubscriptions }: SubscriptionsProp
             const subscription = subscriptions.find(sub => sub._id == id);
             setSubscriptionToUpdate(subscription || null);
           }}
-          onDelete={(id) => { }}
+          onDelete={(id) => {
+            const subscription = subscriptions.find(sub => sub._id == id);
+            setSubscriptionToDelete(subscription || null);
+          }}
         />
       </Paper>
     </Box>

@@ -3,6 +3,7 @@ import { User } from "@api/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   createSubscription,
+  deleteSubscription,
   getSubscriptions,
   updateSubscription,
 } from "./actions";
@@ -38,6 +39,31 @@ const subscriptionsSlice = createSlice({
           ...action.payload.user,
           subscription: (action.payload.user.subscription as Subscription)._id
         });
+      }
+    },
+    
+    subscriptionDeleteUser(state, action: PayloadAction<{ user: string, subscription: string }>) {
+      const subscription = state.subscriptions
+        .find(sub =>sub._id == action.payload.subscription);
+      
+      if (subscription) {
+        subscription.users = (subscription.users as User[])
+          .filter(u => u._id !== action.payload.user )
+      }
+    },
+
+    subscriptionAddDevice(state, action: PayloadAction<{device: string; subscription: string}>) {
+      const subscription = state.subscriptions.find(sub =>sub._id == action.payload.subscription);
+      if(subscription) {
+        (subscription.devices as string[]).push(action.payload.device);
+      }
+    },
+
+    subscriptionDeleteDevice(state, action: PayloadAction<{ subscription: string; device: string }>) {
+      const subscription = state.subscriptions.find(sub =>sub._id == action.payload.subscription);
+      if(subscription) {
+        subscription.devices = (subscription.devices as string[])
+          .filter(device => device !== action.payload.device);
       }
     },
 
@@ -92,6 +118,20 @@ const subscriptionsSlice = createSlice({
       const errors = action.payload || [];
       state.errors = [...state.errors, ...errors];
     });
+
+    builder.addCase(deleteSubscription.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteSubscription.fulfilled, (state, action) => {
+      state.loading = false;
+      state.subscriptions = state.subscriptions.
+        filter(sub => sub._id !== action.payload._id);
+    });
+    builder.addCase(deleteSubscription.rejected, (state, action) => {
+      state.loading = false;
+      const errors = action.payload || [];
+      state.errors = [...state.errors, ...errors];
+    });
   },
 });
 
@@ -99,7 +139,10 @@ export const {
   subscriptionsClearErrors, 
   subscriptionsClearState, 
   setSubscriptions,
+  subscriptionDeleteDevice,
+  subscriptionAddDevice,
   addUser,
+  subscriptionDeleteUser,
 } = subscriptionsSlice.actions;
 
 export default subscriptionsSlice.reducer;

@@ -1,6 +1,6 @@
 import { Subscription } from "@api/types/subscription";
 import { useAppDispatch } from "@redux/store";
-import { createSubscription, updateSubscription } from "@redux/subscriptions/actions";
+import { createSubscription, deleteSubscription, updateSubscription } from "@redux/subscriptions/actions";
 import { useState } from "react";
 
 export const useSubscriptions = (initialSubscriptions: Subscription[]) => {
@@ -27,9 +27,20 @@ export const useSubscriptions = (initialSubscriptions: Subscription[]) => {
     }
   }
 
+  const remove = async (id: string) => {
+    try {
+      const subscription = await dispatch(deleteSubscription(id)).unwrap();
+      setSubscriptions((prev) => prev.filter(sub => sub._id !== subscription._id));
+      return subscription;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   const handlers = {
     create,
     update,
+    remove,
   }
 
   return { subscriptions, handlers };

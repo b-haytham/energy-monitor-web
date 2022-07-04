@@ -53,16 +53,17 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
   });
   
   const onSubmitForm = (data: any) => {
-    onSubmit({
-      ...data,
-      company_info: {
-        ...data.company_info,
-        address: {
-          ...data.company_info.address,
-          zip: parseInt(data.company_info.address.zip)
-        }
-      }
-    });
+    // onSubmit({
+    //   ...data,
+    //   company_info: {
+    //     ...data.company_info,
+    //     address: {
+    //       ...data.company_info.address,
+    //       zip: parseInt(data.company_info.address.zip)
+    //     }
+    //   }
+    // });
+    onSubmit(data);
   }
 
   return (

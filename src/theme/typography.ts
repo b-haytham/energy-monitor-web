@@ -2,10 +2,10 @@ import { Theme } from "@mui/material/styles";
 import { pxToRem, responsiveFontSizes } from "../utils/getFontValues";
 
 const FONT_PRIMARY = '"Roboto", sans-serif';
-
+const FONT_PRIMARY_2 = 'Public Sans, sans-serif'; // Google Font
 //@ts-ignore
 const typography: Theme['typography'] = {
-  fontFamily: FONT_PRIMARY,
+  fontFamily: FONT_PRIMARY_2,
   fontWeightRegular: 400,
   fontWeightMedium: 600,
   fontWeightBold: 700,

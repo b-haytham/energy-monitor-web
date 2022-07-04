@@ -4,7 +4,8 @@ import { Device } from "@api/types/device";
 import { CreateRequest, QueryDeviceOptions, UpdateRequest } from "@api/devices";
 
 import api from "@api";
-import { RootState } from "@redux/rootReducer";
+import { subscriptionAddDevice, subscriptionDeleteDevice } from "@redux/subscriptions/subscriptionsSlice";
+import { Subscription } from "@api/types/subscription";
 
 export const createDevice = createAsyncThunk<
   Device,
@@ -13,13 +14,11 @@ export const createDevice = createAsyncThunk<
 >("devices/create", async (params, thunkApi) => {
   try {
     const data: Device = await api.devices.create(params);
-    const state = thunkApi.getState() as RootState;
     
-    const subscription = state.subscriptions.subscriptions.find(sub => sub._id == data.subscription);
-
-    if(subscription) {
-      data.subscription = subscription;
-    }
+    thunkApi.dispatch(subscriptionAddDevice({ 
+      device: data._id, 
+      subscription: (data.subscription as Subscription)._id  
+    }))
     return data;
   } catch (error: any) {
     const messages: string[] = error.errors;
@@ -63,6 +62,24 @@ export const getDevice = createAsyncThunk<
   try {
     const data = await api.devices.get(id);
     return data as Device;
+  } catch (error: any) {
+    const messages: string[] = error.errors;
+    return thunkApi.rejectWithValue(messages);
+  }
+});
+
+export const deleteDevice = createAsyncThunk<
+  Device,
+  string,
+  { rejectValue: string[] }
+>("devices/remove", async (id, thunkApi) => {
+  try {
+    const data: Device = await api.devices.remove(id);
+    thunkApi.dispatch(subscriptionDeleteDevice({ 
+      device: data._id, 
+      subscription: (data.subscription as Subscription)._id 
+    }));
+    return data;
   } catch (error: any) {
     const messages: string[] = error.errors;
     return thunkApi.rejectWithValue(messages);

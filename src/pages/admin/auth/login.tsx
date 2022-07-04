@@ -1,9 +1,30 @@
-import { Box, Button, Grid, TextField, Typography } from '@mui/material'
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+
+import { 
+  Box, 
+  Button, 
+  Grid, 
+  IconButton, 
+  InputAdornment, 
+  Stack, 
+  TextField, 
+  Typography 
+} from '@mui/material'
+
+import { 
+  VisibilityOffOutlined, 
+  VisibilityOutlined 
+} from '@mui/icons-material';
+
+import Link from '@components/Link';
+
 import { login } from '@redux/auth/actions';
 import { fetchAll } from '@redux/global/actions';
 import { useAppDispatch } from '@redux/store';
-import { useRouter } from 'next/router';
-import { useForm } from 'react-hook-form';
+
+import socket from 'src/socket';
+import { useDisclosure } from '@mantine/hooks';
 
 interface LoginProps {}
 
@@ -11,6 +32,8 @@ const Login = ({}: LoginProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
+  const [passwordVisible, passwordVisibitiy] = useDisclosure(false);
+  
   const { register, handleSubmit } = useForm({
     defaultValues: {
       email: "",
@@ -21,10 +44,11 @@ const Login = ({}: LoginProps) => {
   const onSubmit = (data: any) => {
     dispatch(login(data))
       .unwrap()
-      .then(({ user }) => {
+      .then(({ user, access_token }) => {
         dispatch(fetchAll(user))
         .unwrap()
         .then(() => {
+          socket.emit('authenticate', { access_token });
           router.push('/admin/dash');
         })
       });
@@ -32,41 +56,67 @@ const Login = ({}: LoginProps) => {
 
   return (
     <Grid container sx={{ minHeight: '100vh' }}>
-      <Grid item xs={12} md={4}  sx={{ p: 3 }}>
-        <Typography variant="h2">Login (Admins)</Typography>
+      <Grid item xs={12} sm={12} md={6}  sx={{ p: { xs: 3, sm: 10 ,md: 10 } }}  alignSelf={'center'}>
+        <Box sx={{ my: 'auto' }}>
+          <Typography variant="h3" component="h1">Login To Engy</Typography>
+          <Typography variant="subtitle2" component="p">Please provide your credentials</Typography>
 
-        <Box sx={{ mt: 3 }}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField 
-              id="email" 
-              fullWidth 
-              label="Email"
-              size='small'
-              sx={{ mb: 2 }}
-              {...register('email')}
-            />
-            <TextField 
-              id="password" 
-              fullWidth 
-              label="Password" 
-              type="password" 
-              size='small'
-              sx={{ mb: 2 }}
-              {...register('password')}  
-            />
-            <Button 
-              type='submit' 
-              size="large"
-              variant="contained"
-              fullWidth
-              sx={{ boxShadow: "none" }}
-            >
-              Submit
-            </Button>
-          </form>
+          <Box sx={{ mt: 4 }}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <TextField 
+                id="email" 
+                fullWidth 
+                label="Email"
+                sx={{ mb: 2 }}
+                {...register('email')}
+              />
+              <TextField 
+                id="password" 
+                fullWidth 
+                label="Password" 
+                type={passwordVisible ? "text" : "password"} 
+                sx={{ mb: 2 }}
+                {...register('password')}  
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton size="small" onClick={passwordVisibitiy.toggle}>
+                        {passwordVisible ? 
+                          <VisibilityOffOutlined fontSize="small" /> : 
+                          <VisibilityOutlined fontSize="small" />
+                        }
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <Stack direction="row" justifyContent="end" sx={{ mb: 2 }}>
+                <Box>
+                  <Link href={"/admin/auth/forgot-password"}>
+                    Forgot password ?
+                  </Link>
+                </Box>
+              </Stack>
+              <Button 
+                type='submit' 
+                size="large"
+                fullWidth
+              >
+                Submit
+              </Button>
+            </form>
+          </Box>
         </Box>
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid 
+        item 
+        xs={0} 
+        sm={0} 
+        md={6} 
+        sx={{ 
+          bgcolor: (theme) => theme.palette.grey[50]
+        }}
+      >
       </Grid>
     </Grid>
   )

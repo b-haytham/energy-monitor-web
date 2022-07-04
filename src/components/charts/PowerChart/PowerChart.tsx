@@ -49,41 +49,38 @@ const PowerChart = ({}: PowerChartProps) => {
             { label: '1 Year', value: '1y' },
           ]}
           onChange={(value) => {
-            console.log((value));
             setChartTime(value);
           }}
         />
       </Stack>
-      <Line
-        options={{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'top' as const,
+      <div style={{ position: 'relative', height: '100%', width: '99%' }}>
+        <Line
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top' as const,
+              },
             },
-            // title: {
-            //   display: true,
-            //   text: 'Chart.js Bar Chart',
-            // },
-          },
-        }}
-        data={{
-          labels,
-          datasets: [
-            {
-              label: 'Dataset 1',
-              data: labels.map(() => fakeNumber(0, 1000)),
-              backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            },
-            {
-              label: 'Dataset 2',
-              data: labels.map(() => fakeNumber(0,1000)),
-              backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            },
-          ],
-        }}
-      />
+          }}
+          data={{
+            labels,
+            datasets: [
+              {
+                label: 'Dataset 1',
+                data: labels.map(() => fakeNumber(0, 1000)),
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+              },
+              {
+                label: 'Dataset 2',
+                data: labels.map(() => fakeNumber(0,1000)),
+                backgroundColor: 'rgba(53, 162, 235, 0.5)',
+              },
+            ],
+          }}
+        />
+      </div>
     </Box>
   )
 }

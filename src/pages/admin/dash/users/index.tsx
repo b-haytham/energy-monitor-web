@@ -13,6 +13,8 @@ import { User } from '@api/types/user';
 import { handleServerSidePropsRejection } from '@utils/errors';
 import { useUsers } from 'src/hooks/useUsers';
 import { useState } from 'react';
+import ConfirmDelete from '@components/forms/ConfirmDelete';
+import { useSnackbar } from 'notistack';
 
 interface UsersProps {
   users: User[]
@@ -20,13 +22,34 @@ interface UsersProps {
 
 const Users: NextPage<UsersProps> = ({ users: serverUsers }) => {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const { users, handlers } = useUsers(serverUsers);
   const [createUserOpen, createUserHandlers] = useDisclosure(false);
 
   const [userToUpdate, setUserToUpdate] = useState<User | null>(null)
+  const [userToDelete, setUserToDelete] = useState<User | null>(null)
 
   return (
-    <Box>
+    <Box sx={{  height: 1, display: 'flex', flexDirection: 'column' }}>
+      {userToDelete && (
+        <ConfirmDelete 
+          title="Delete User"
+          content={`You're about to delete a user, this action is destrucive`}
+          open={Boolean(userToDelete)}
+          onClose={() => setUserToDelete(null)}
+          onSubmit={async () => {
+            try {
+              const user = await handlers.remove(userToDelete._id);
+              console.log('DELETED USER >>', user);
+              setUserToDelete(null);
+              enqueueSnackbar("User successfully deleted.", { variant: 'success' })
+            } catch (error) {
+              console.error(error);
+              enqueueSnackbar("Failed to delete user.", { variant: 'error' })
+            }
+          }}
+        />
+      )} 
       <UserFormDialog 
         open={createUserOpen}
         onClose={createUserHandlers.close}
@@ -34,8 +57,10 @@ const Users: NextPage<UsersProps> = ({ users: serverUsers }) => {
           try {
             await handlers.create(data);
             createUserHandlers.close();
+            enqueueSnackbar("User successfully created.", { variant: 'success' })
           } catch (error) {
             console.error(error);
+            enqueueSnackbar("Failed to create user.", { variant: 'error' })
           }
         }}
       />
@@ -64,7 +89,7 @@ const Users: NextPage<UsersProps> = ({ users: serverUsers }) => {
       />
       <Paper
         variant="outlined"
-        sx={{ mt: 2, border: 'none', height: 500 }}
+        sx={{ my: 2, border: 'none', flex: 1 }}
       >
         <UsersTable 
           users={users} 
@@ -76,7 +101,8 @@ const Users: NextPage<UsersProps> = ({ users: serverUsers }) => {
             setUserToUpdate(user || null);
           }}
           onDelete={(id) => {
-            console.log(id);
+            const user = users.find(user => user._id == id);
+            setUserToDelete(user || null);
           }}
         />
       </Paper>

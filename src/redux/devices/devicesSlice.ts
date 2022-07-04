@@ -2,7 +2,7 @@ import { Device } from "@api/types/device";
 import { DeviceNotification } from "@api/types/device-notification";
 import { Value } from "@api/types/value";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { createDevice, getDevices, updateDevice } from "./actions";
+import { createDevice, deleteDevice, getDevices, updateDevice } from "./actions";
 
 // Define a type for the slice state
 interface InitialState {
@@ -42,6 +42,15 @@ const devicesSlice = createSlice({
 
     setDevices: (state, action: PayloadAction<Device[]>) => {
       state.devices = action.payload
+    },
+    
+    deleteDevices: (state, action: PayloadAction<string[]>) => {
+      state.devices = state.devices.filter((device) => !action.payload.includes(device._id));
+    },
+
+    
+    deleteDevice: (state, action: PayloadAction<string>) => {
+      state.devices = state.devices.filter((device) => device._id !== action.payload);
     },
 
     devicesCrearErrors: (state) => {
@@ -95,6 +104,19 @@ const devicesSlice = createSlice({
       const errors = action.payload || [];
       state.errors = [...state.errors, ...errors];
     });
+
+    builder.addCase(deleteDevice.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteDevice.fulfilled, (state, action) => {
+      state.loading = false;
+      state.devices = state.devices.filter(device => device._id !== action.payload._id)
+    });
+    builder.addCase(deleteDevice.rejected, (state, action) => {
+      state.loading = false;
+      const errors = action.payload || [];
+      state.errors = [...state.errors, ...errors];
+    });
   },
 });
 
@@ -103,6 +125,7 @@ export const {
   devicesCrearErrors,
   setDevices,
   deviceHandleNotification,
+  deleteDevices,
 } = devicesSlice.actions;
 
 export default devicesSlice.reducer;

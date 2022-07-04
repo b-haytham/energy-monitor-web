@@ -89,6 +89,7 @@ const UsersTable = ({ users, onEdit, onView, onDelete }: UsersTableProps) => {
       columns={columns}
       rows={users}
       getRowId={(row) => row._id}
+      sx={{ borderRadius: 2 }}
     />
   )
 }

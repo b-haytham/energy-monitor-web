@@ -87,6 +87,7 @@ const DevicesTable = ({
       columns={columns}
       rows={devices}
       getRowId={(row) => row._id}
+      sx={{ borderRadius: 2 }}
     />
   )
 }

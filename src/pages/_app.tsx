@@ -19,6 +19,10 @@ import { deviceHandleNotification } from '@redux/devices/devicesSlice';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import NextNProgress from "nextjs-progressbar";
+import { createReport } from '@redux/reports/reportsSlice';
+import { addTriggeredAlert } from '@redux/alerts/alertsSlice';
+import { SnackbarProvider, useSnackbar } from 'notistack';
+import NextComponent from '@components/NextComponent';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -45,22 +49,34 @@ export default function MyApp(props: MyAppProps) {
     }
   }, [])
 
-  useEffect(() => {
-    socket.on('authenticated', (data) => {
-      console.log('WS_AUTHENTICATED', data);
-    })
-
-    socket.on('device/notification', (data) => {
-      console.log('WS_DEVICE_NOTIFICATION', data);
-      store.dispatch(deviceHandleNotification(data));
-    })
-
-    return () => {
-      socket.off('authenticated');
-      socket.off('device/notification');
-    }
-
-  }, [])
+  // useEffect(() => {
+  //   socket.on('authenticated', (data) => {
+  //     console.log('WS_AUTHENTICATED', data);
+  //   })
+  //
+  //   socket.on('device/notification', (data) => {
+  //     console.log('WS_DEVICE_NOTIFICATION', data);
+  //     store.dispatch(deviceHandleNotification(data));
+  //   })
+  //
+  //   socket.on('report-generated', (data) => {
+  //     console.log('WS_REPORT_GENERATED', data);
+  //     store.dispatch(createReport(data));
+  //   })
+  //
+  //   socket.on('triggered-alert', (data) => {
+  //     console.log('WS_TRIGGERED_ALERT', data);
+  //     store.dispatch(addTriggeredAlert(data));
+  //   })
+  //
+  //   return () => {
+  //     socket.off('authenticated');
+  //     socket.off('device/notification');
+  //     socket.off('report-generated');
+  //     socket.off('triggered-alert');
+  //   }
+  //
+  // }, [])
 
   const rendered = useRendered();
   if (!rendered) {
@@ -75,23 +91,26 @@ export default function MyApp(props: MyAppProps) {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <ThemeProvider theme={theme}>
-            <NextNProgress
-              color={theme.palette.primary.main}
-              startPosition={0.3}
-              stopDelayMs={200}
-              height={3}
-              showOnShallow={true}
-            />           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-            <CssBaseline />
-            <QueryClientProvider client={queryClient}>
-              {router.pathname.includes('dash') ? (
-                <Layout>
+            <SnackbarProvider autoHideDuration={4000} maxSnack={5}>
+              <NextNProgress
+                color={theme.palette.primary.main}
+                startPosition={0.3}
+                stopDelayMs={200}
+                height={3}
+                showOnShallow={true}
+              />           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+              <CssBaseline />
+              <QueryClientProvider client={queryClient}>
+                {/* {router.pathname.includes('dash') ? (
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                ): (
                   <Component {...pageProps} />
-                </Layout>
-              ): (
-                <Component {...pageProps} />
-              )}
-            </QueryClientProvider>
+                )} */ } 
+                <NextComponent Component={Component} pageProps={pageProps} />
+              </QueryClientProvider>
+            </SnackbarProvider>
           </ThemeProvider>
         </PersistGate>
       </Provider>

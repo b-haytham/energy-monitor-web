@@ -1,5 +1,5 @@
 import { Device } from "@api/types/device";
-import { createDevice, updateDevice } from "@redux/devices/actions";
+import { createDevice, deleteDevice, updateDevice } from "@redux/devices/actions";
 import { useAppDispatch } from "@redux/store";
 import { useState } from "react";
 
@@ -27,9 +27,20 @@ export const useDevices = (initialDevices: Device[]) => {
     }
   }
 
+  const remove = async (id: string) => {
+    try {
+      const device = await dispatch(deleteDevice(id)).unwrap();
+      setDevices((prev) => prev.filter(dev => dev._id !== device._id));
+      return device;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   const handlers = {
     create,
     update,
+    remove,
   }
 
   return { devices, handlers };
