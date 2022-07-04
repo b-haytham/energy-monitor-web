@@ -19,6 +19,8 @@ import { Device } from '@api/types/device';
 import { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { SubscriptionFormDialog } from '@components/forms/SubscriptionForm';
+import DevicesOverviewSection from '@views/DevicesOverviewSection';
+import { useAppSelector } from '@redux/store';
 
 interface SubscriptionDetailProps {
   subscription: Subscription
@@ -27,7 +29,12 @@ interface SubscriptionDetailProps {
 
 const SubscriptionDetail = ({ subscription: serverSubscription }: SubscriptionDetailProps) => {
   const router = useRouter();
-  const { subscription } = useSubscriptionDetails(serverSubscription);
+  const { subscription, devices } = useSubscriptionDetails(serverSubscription);
+
+  // devices in redux store
+  const storedDevices = useAppSelector((state) => state.devices.devices
+    .filter(dev => (dev.subscription as Subscription)._id == subscription._id))
+
   const [showMore, setShowMore] = useState(false); 
   
   const [updateOpen, updateHandlers] = useDisclosure(false)
@@ -77,16 +84,11 @@ const SubscriptionDetail = ({ subscription: serverSubscription }: SubscriptionDe
           devices={subscription.devices as Device[]}
         />
       </ChartContainer>
-
-      <Grid container spacing={2} sx={{ mt: 1, mb: 2 }}>
-        <Grid item xs={12} md={6}>
-          <Paper variant={'outlined'} sx={{ borderRadius: 2, height: 500 }} />
-        </Grid>
-
-        <Grid item xs={12} md={6}>
-          <Paper variant={'outlined'} sx={{ borderRadius: 2, height: 500 }} />
-        </Grid>
-      </Grid>
+      
+      <DevicesOverviewSection 
+        devices={storedDevices} 
+        ContainerProps={{ sx: { my: 2 } }} 
+      />
     </Box>
   )
 }

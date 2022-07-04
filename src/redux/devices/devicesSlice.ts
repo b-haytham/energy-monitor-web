@@ -7,6 +7,7 @@ import { createDevice, deleteDevice, getDevices, updateDevice } from "./actions"
 // Define a type for the slice state
 interface InitialState {
   devices: Device[];
+  deviceValuesMap: Record<string, Value[]>
   loading: boolean;
   errors: string[];
 }
@@ -16,6 +17,7 @@ const initialState: InitialState = {
   devices: [],
   loading: false,
   errors: [],
+  deviceValuesMap: {},
 };
 
 const devicesSlice = createSlice({
@@ -37,6 +39,7 @@ const devicesSlice = createSlice({
           }
         })
         device.values = newValues;  
+        state.deviceValuesMap[device._id] = newValues;
       }
     },
 
