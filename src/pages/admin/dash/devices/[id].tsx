@@ -23,6 +23,7 @@ import api from '@api';
 import { Device } from '@api/types/device';
 import { useDisclosure } from '@mantine/hooks';
 import { DeviceFormDialog } from '@components/forms/DeviceForm';
+import DeviceInfo from '@views/DeviceInfo';
 
 interface DeviceDetailProps {
   device: Device
@@ -83,16 +84,7 @@ const DeviceDetail: NextPage<DeviceDetailProps> = ({ device: serverDevice }) => 
         }
       />
       
-      {showMore && (
-        <Paper variant="outlined" sx={{ borderRadius: 2, mt: 2, p: 2 }}>
-          <Typography>ID {device._id}</Typography> 
-          <Typography>Name {device.name}</Typography> 
-          <Typography>Description {device.description}</Typography> 
-          <Typography>Subscription {subscription.company_info.name}</Typography> 
-          <Typography>Values {values.length}</Typography> 
-          <Typography sx={{ maxWidth: { xs: 300, md: 700 }  }} style={{ wordWrap: 'break-word' }}>Token {token ?? ""}</Typography> 
-        </Paper>
-      )}
+      {showMore && token && (<DeviceInfo device={device} token={token} />)}
 
       <HorizontalScroll 
         spacing={2}

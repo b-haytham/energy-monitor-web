@@ -44,7 +44,6 @@ const DevicesOverviewSection = ({ devices: initialDevices, ContainerProps }: Dev
 
   const selectedDeviceValues = useAppSelector(state => {
     if(selectedDevice && selectedDevice._id in state.devices.deviceValuesMap) {
-      console.log('IIIIIIIII')
       return state.devices.deviceValuesMap[selectedDevice._id];
     } else if (selectedDevice) {
       const dev = devices.find(dev => dev._id == selectedDevice._id)

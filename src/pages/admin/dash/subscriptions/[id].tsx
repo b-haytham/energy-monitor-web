@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 
-import { Box, Fade, Grid, IconButton, Paper, Slide, Stack, Typography } from '@mui/material'
+import { 
+  Box, 
+  IconButton, 
+  Stack, 
+} from '@mui/material'
 
 import { ArrowDownwardOutlined, ArrowUpwardOutlined, EditOutlined } from '@mui/icons-material';
 
@@ -9,18 +14,19 @@ import PageHeader from '@components/PageHeader';
 import ChartContainer from '@views/ChartContainer';
 import TotalEnergieConsumptionChart from '@components/charts/TotalEnergieConsumptionChart';
 import EnergieOverview from '@views/EnergieOverview';
+import DevicesOverviewSection from '@views/DevicesOverviewSection';
+import { SubscriptionFormDialog } from '@components/forms/SubscriptionForm';
+import SubscriptionInfo from '@views/SubscriptionInfo';
 
 import { handleServerSidePropsRejection } from '@utils/errors';
 import { useSubscriptionDetails } from 'src/hooks/useSubscriptionDetails';
 
+import { useDisclosure } from '@mantine/hooks';
+import { useAppSelector } from '@redux/store';
+
 import api from '@api';
 import { Subscription } from '@api/types/subscription';
 import { Device } from '@api/types/device';
-import { useState } from 'react';
-import { useDisclosure } from '@mantine/hooks';
-import { SubscriptionFormDialog } from '@components/forms/SubscriptionForm';
-import DevicesOverviewSection from '@views/DevicesOverviewSection';
-import { useAppSelector } from '@redux/store';
 
 interface SubscriptionDetailProps {
   subscription: Subscription
@@ -64,16 +70,8 @@ const SubscriptionDetail = ({ subscription: serverSubscription }: SubscriptionDe
           </Stack>
         }
       />
-      {showMore && (
-        <Paper variant="outlined" sx={{ borderRadius: 2, mt: 2, p: 2 }}>
-          <Typography>ID {subscription._id}</Typography> 
-          <Typography>Name {subscription.company_info.name}</Typography> 
-          <Typography>Email {subscription.company_info.email}</Typography> 
-          <Typography>Phone {subscription.company_info.phone}</Typography> 
-          <Typography>Users {subscription.users.length}</Typography>
-          <Typography>Devices {subscription.devices.length}</Typography>
-        </Paper>
-      )}
+      {showMore && (<SubscriptionInfo subscription={subscription} />)}
+
       <EnergieOverview sx={{ mt: 0 }} />
 
       <ChartContainer
