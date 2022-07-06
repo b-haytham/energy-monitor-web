@@ -103,7 +103,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
     ); 
     console.log("Server ", subscription);
   } catch (error) {
-    return handleServerSidePropsRejection(error);  
+    return handleServerSidePropsRejection(error, '/admin/auth/login');  
   }
 
   return {

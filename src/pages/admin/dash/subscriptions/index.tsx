@@ -1,21 +1,23 @@
+import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 
-import { Box, Button, Paper } from '@mui/material'
-import { useDisclosure } from '@mantine/hooks';
+import { Box, IconButton, Paper } from '@mui/material'
+import { AddOutlined } from '@mui/icons-material';
 
 import PageHeader from '@components/PageHeader';
 import SubscriptionsTable from '@components/tables/SubscriptionsTable';
 import { SubscriptionFormDialog } from '@components/forms/SubscriptionForm';
+import ConfirmDelete from '@components/forms/ConfirmDelete';
+
+import { useDisclosure } from '@mantine/hooks';
+import { useSubscriptions } from 'src/hooks/useSubscriptions';
+import { useSnackbar } from 'notistack';
+
+import { handleServerSidePropsRejection } from '@utils/errors';
 
 import api from '@api';
-
 import { Subscription } from '@api/types/subscription';
-import { handleServerSidePropsRejection } from '@utils/errors';
-import { useSubscriptions } from 'src/hooks/useSubscriptions';
-import { useState } from 'react';
-import ConfirmDelete from '@components/forms/ConfirmDelete';
-import { useSnackbar } from 'notistack';
 
 interface SubscriptionsProps {
   subscriptions: Subscription[]
@@ -89,13 +91,9 @@ const Subscriptions = ({ subscriptions: serverSubscriptions }: SubscriptionsProp
         title="Subscriptions"
         onBack={() => router.back()}
         right={
-          <Button
-            color="primary"
-            variant="outlined"
-            onClick={createSubscriptionHandlers.open}
-          >
-            Add Subscription
-          </Button>
+          <IconButton size="small" onClick={createSubscriptionHandlers.open}>
+            <AddOutlined />
+          </IconButton>
         }
       />
       <Paper variant="outlined" sx={{ my: 2, flex: 1, border: 'none' }}>
@@ -125,7 +123,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     subscriptions = await api.subscriptions.find({ headers: req.headers, params: { p: "admin,devices,users" } });
     console.log('Server ', subscriptions);
   } catch (error) {
-    return handleServerSidePropsRejection(error);
+    return handleServerSidePropsRejection(error, '/admin/auth/login');
   }
   return {
     props: {

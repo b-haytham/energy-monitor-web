@@ -51,6 +51,7 @@ const DeviceDetail: NextPage<DeviceDetailProps> = ({ device: serverDevice }) => 
     fetchToken()
     socket.on(`notification/${device._id}`, (data) => {
       console.log(`WS_DEVICE [${device._id}]`, data);
+      handlers.handleNotification(data);
     })
 
     return () => {
@@ -124,7 +125,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
     ); 
     console.log("Server ", device);
   } catch (error) {
-    return handleServerSidePropsRejection(error);  
+    return handleServerSidePropsRejection(error, '/admin/auth/login');  
   }
 
   return {

@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useSnackbar } from 'notistack';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
-import { Box, Button, Paper } from '@mui/material'
+import { Box, IconButton, Paper } from '@mui/material'
+import { AddOutlined } from '@mui/icons-material';
 
 import PageHeader from '@components/PageHeader';
 import DevicesTable from '@components/tables/DevicesTable';
@@ -15,7 +17,6 @@ import { useDevices } from 'src/hooks/useDevices';
 import api from '@api';
 import { Device } from '@api/types/device';
 import { handleServerSidePropsRejection } from '@utils/errors';
-import { useSnackbar } from 'notistack';
 
 interface DeviceProps {
   devices: Device[];
@@ -95,13 +96,9 @@ const Devices: NextPage<DeviceProps> = ({ devices: serverDevices }) => {
         title='Devices'
         onBack={() => router.back()}
         right={
-          <Button
-            variant='outlined'
-            color='primary'
-            onClick={createDeviceHandlers.open}
-          >
-            Create Device
-          </Button>
+          <IconButton size="small" onClick={createDeviceHandlers.open}>
+            <AddOutlined />
+          </IconButton>
         }
       />
       <Paper
@@ -140,7 +137,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     console.log("Server ", devices);
 
   } catch (error) {
-    return handleServerSidePropsRejection(error);
+    return handleServerSidePropsRejection(error, '/admin/auth/login');
   }
 
   return {
