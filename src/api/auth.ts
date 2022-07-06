@@ -20,6 +20,11 @@ export type CreateDeviceToken = {
   device: string
 }
 
+export type ChangePasswordDto = {
+  current: string;
+  new: string;
+}
+
 export namespace auth {
   export const login = async (params: LoginRequest) => {
     try {
@@ -66,4 +71,13 @@ export namespace auth {
     }
   }
   
+
+  export const changePassword = async (changePasswordDto: ChangePasswordDto) => {
+    try {
+      const { data } = await axios.post(`${base_url}/auth/change-password`, changePasswordDto);
+      return data as User;
+    } catch (error) {
+      throw new ApiError(error);
+    }
+  }
 }

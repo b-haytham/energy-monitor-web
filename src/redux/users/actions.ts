@@ -5,6 +5,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@api";
 import { addUser, subscriptionDeleteUser } from "@redux/subscriptions/subscriptionsSlice";
 import { Subscription } from "@api/types/subscription";
+import { UpdateUserDto } from "@api/users";
 
 export const createUser = createAsyncThunk<
   User,
@@ -36,6 +37,20 @@ export const deleteUser = createAsyncThunk<
         subscription: (data.subscription as Subscription)._id 
       }))
     }
+    return data;
+  } catch (error: any) {
+    const messages: string[] = error.errors;
+    return thunkApi.rejectWithValue(messages);
+  }
+});
+
+export const updateUser = createAsyncThunk<
+  User,
+  UpdateUserDto & { _id: string },
+  { rejectValue: string[] }
+>("users/update", async (params, thunkApi) => {
+  try {
+    const data: User = await api.users.update(params._id, params);
     return data;
   } catch (error: any) {
     const messages: string[] = error.errors;

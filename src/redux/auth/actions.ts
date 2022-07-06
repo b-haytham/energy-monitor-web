@@ -1,12 +1,15 @@
 import { devicesClearState } from "@redux/devices/devicesSlice";
 import { subscriptionsClearState } from "@redux/subscriptions/subscriptionsSlice";
-import { usersClearState } from "@redux/users/usersSlice";
+import { updateUserName, usersClearState } from "@redux/users/usersSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 
 import api from "src/api";
 
 import { User } from "@api/types/user";
+import { alertsClearState } from "@redux/alerts/alertsSlice";
+import { reportsClearState } from "@redux/reports/reportsSlice";
+import { UpdateUserInfoDto } from "@api/users";
 
 export const login = createAsyncThunk<
   { access_token: string; user: User },
@@ -25,6 +28,21 @@ export const login = createAsyncThunk<
   }
 }); 
 
+export const updateUserInfo = createAsyncThunk<
+  User,
+  UpdateUserInfoDto & { _id: string },
+  { rejectValue: string[] }
+>("auth/updateUser", async (params, thunkApi) => {
+  try {
+    const data: User = await api.users.updateInfo(params._id, params);
+    thunkApi.dispatch(updateUserName(data));        
+    return data;
+  } catch (error: any) {
+    const messages: string[] = error.errors;
+    return thunkApi.rejectWithValue(messages);
+  }
+}); 
+
 export const logout = createAsyncThunk<{}, {}, { rejectValue: string[] }>(
   "auth/logout",
   async ({}, thunkApi) => {
@@ -33,6 +51,8 @@ export const logout = createAsyncThunk<{}, {}, { rejectValue: string[] }>(
       thunkApi.dispatch(subscriptionsClearState());
       thunkApi.dispatch(devicesClearState());
       thunkApi.dispatch(usersClearState());
+      thunkApi.dispatch(alertsClearState());
+      thunkApi.dispatch(reportsClearState());
       return data;
     } catch (error: any) {
       const messages: string[] = error.errors;
@@ -40,3 +60,4 @@ export const logout = createAsyncThunk<{}, {}, { rejectValue: string[] }>(
     }
   }
 );
+

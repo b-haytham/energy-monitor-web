@@ -1,20 +1,24 @@
+import { useState } from 'react';
+import { useSnackbar } from 'notistack';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
-import { Box, Button, Paper } from '@mui/material'
-import { useDisclosure } from '@mantine/hooks';
+import { Box, IconButton, Paper } from '@mui/material'
+import { AddOutlined } from '@mui/icons-material';
 
 import PageHeader from '@components/PageHeader';
 import UsersTable from '@components/tables/UsersTable';
 import { UserFormDialog } from '@components/forms/UserForm';
+import ConfirmDelete from '@components/forms/ConfirmDelete';
+
+import { useDisclosure } from '@mantine/hooks';
+import { useUsers } from 'src/hooks/useUsers';
+
+import { handleServerSidePropsRejection } from '@utils/errors';
 
 import api from '@api';
 import { User } from '@api/types/user';
-import { handleServerSidePropsRejection } from '@utils/errors';
-import { useUsers } from 'src/hooks/useUsers';
-import { useState } from 'react';
-import ConfirmDelete from '@components/forms/ConfirmDelete';
-import { useSnackbar } from 'notistack';
+
 
 interface UsersProps {
   users: User[]
@@ -69,8 +73,17 @@ const Users: NextPage<UsersProps> = ({ users: serverUsers }) => {
         open={true}
         onClose={() => setUserToUpdate(null)}
         initialValues={userToUpdate}
-        onSubmit={(values) => {
+        onSubmit={async (values) => {
           console.log(values);
+          try {
+            const user = await handlers.update({ ...values, _id: userToUpdate._id });
+            enqueueSnackbar("User successfully updated.", { variant: 'success' })
+            setUserToUpdate(null);
+            console.log(user);
+          } catch (error) {
+            console.error(error);
+            enqueueSnackbar((error as any).message, { variant: 'error' });
+          }
         }}
       />}
       
@@ -78,13 +91,9 @@ const Users: NextPage<UsersProps> = ({ users: serverUsers }) => {
         title="Users" 
         onBack={() => router.back()} 
         right={
-          <Button
-            color="primary"
-            variant="outlined"
-            onClick={createUserHandlers.open}
-          >
-            Add User
-          </Button>
+          <IconButton size="small" onClick={createUserHandlers.open}>
+            <AddOutlined />
+          </IconButton>
         }
       />
       <Paper
@@ -118,7 +127,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     users = await api.users.find({ headers: req.headers, params: { p: "subscription" } })
     console.log("Server ", users)
   } catch (error) {
-    return handleServerSidePropsRejection(error);  
+    return handleServerSidePropsRejection(error, '/admin/auth/login');  
   }
 
   return {

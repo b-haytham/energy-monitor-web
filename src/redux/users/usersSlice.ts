@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { User } from "@api/types/user";
-import { createUser, deleteUser } from "./actions";
+import { createUser, deleteUser, updateUser } from "./actions";
 
 // Define a type for the slice state
 interface InitialState {
@@ -27,6 +27,10 @@ const usersSlice = createSlice({
       if (user) {
         user.subscription = action.payload.subscription;
       }
+    },
+
+    updateUserName: (state, action: PayloadAction<User>) => {
+      state.users = state.users.map(u => u._id == action.payload._id ? action.payload : u);
     },
 
     setUsers: (state, action: PayloadAction<User[]>) => {
@@ -77,6 +81,19 @@ const usersSlice = createSlice({
       const errors = action.payload || [];
       state.errors = [...state.errors, ...errors];
     });
+
+    builder.addCase(updateUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.users = state.users.map(u => u._id == action.payload._id ? action.payload : u);
+    });
+    builder.addCase(updateUser.rejected, (state, action) => {
+      state.loading = false;
+      const errors = action.payload || [];
+      state.errors = [...state.errors, ...errors];
+    });
   },
 });
 
@@ -86,6 +103,7 @@ export const {
   setUsers,
   // deleteUser,
   deleteUsers,
+  updateUserName,
   setUserSubscription,
 } = usersSlice.actions;
 

@@ -1,6 +1,6 @@
 import { User } from "@api/types/user";
 import { createSlice } from "@reduxjs/toolkit";
-import { login, logout } from "./actions";
+import { changePassword, login, logout, updateUserInfo } from "./actions";
 
 // Define a type for the slice state
 interface InitialState {
@@ -58,6 +58,19 @@ const authSlice = createSlice({
       state.access_token = null;
     });
     builder.addCase(logout.rejected, (state) => {
+      state.loading = false;
+      state.errors = [];
+    });
+
+    builder.addCase(updateUserInfo.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateUserInfo.fulfilled, (state, action) => {
+      if (state.user) {
+        state.user = action.payload
+      } 
+    });
+    builder.addCase(updateUserInfo.rejected, (state, action) => {
       state.loading = false;
       state.errors = [];
     });

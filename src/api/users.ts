@@ -4,6 +4,7 @@ import { ApiError } from "@utils/errors";
 import { NextConfig } from "next";
 import getConfig from "next/config";
 import { User } from "./types/user";
+import { RegisterRequest } from "./auth";
 
 const { publicRuntimeConfig }: NextConfig = getConfig();
 
@@ -18,6 +19,10 @@ export type QueryUserOptions = {
   headers?: Record<string, any>;
 };
 
+export type UpdateUserDto = RegisterRequest;
+
+export type UpdateUserInfoDto = Pick<UpdateUserDto, 'last_name' | 'first_name'>
+  
 export namespace users {
   export const get = async (id: string, queryOptions?: QueryUserOptions) => {
     try {
@@ -48,6 +53,26 @@ export namespace users {
   export const remove = async (id: string) => {
     try {
       const { data } = await axios.delete(`${base_url}/users/${id}`);
+
+      return data as User;
+    } catch (error) {
+      throw new ApiError(error);
+    }
+  };
+
+  export const updateInfo = async (id: string, updateUserInfoDto: UpdateUserInfoDto) => {
+    try {
+      const { data } = await axios.patch(`${base_url}/users/${id}/info`, updateUserInfoDto);
+
+      return data as User;
+    } catch (error) {
+      throw new ApiError(error);
+    }
+  };
+
+  export const update= async (id: string, updateUserDto: UpdateUserDto) => {
+    try {
+      const { data } = await axios.put(`${base_url}/users/${id}`, updateUserDto);
 
       return data as User;
     } catch (error) {

@@ -43,6 +43,9 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
     if(data.role !== 'user' && !initialValues) {
       data.subscription = null
     }
+    if(initialValues) {
+      data.password = "password"
+    }
     console.log('USER FORM>>', data)
     onSubmit(data);
   }
