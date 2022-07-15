@@ -129,7 +129,7 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
 
         <TextField 
           id="country"
-          label="Phone"
+          label="Country"
           variant="outlined" 
           required
           fullWidth

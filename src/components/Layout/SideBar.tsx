@@ -92,7 +92,7 @@ const SideBar = ({}: SideBarProps) => {
               if(userRole && userRole.includes("admin")) {
                 router.push("/admin/dash/reports");
               } else {
-                router.push("/dash/rapports");
+                router.push("/dash/reports");
               }
             }}
           />

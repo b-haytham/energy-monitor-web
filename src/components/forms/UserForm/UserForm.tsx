@@ -1,5 +1,5 @@
 import { Subscription } from "@api/types/subscription";
-import { User } from "@api/types/user";
+import { Role, User } from "@api/types/user";
 import { 
   Box, 
   Button, 
@@ -16,6 +16,7 @@ import {
   TextField 
 } from "@mui/material";
 import { useAppSelector } from "@redux/store";
+import { useSnackbar } from "notistack";
 import { useForm } from "react-hook-form";
 
 interface UserFormProps {
@@ -25,6 +26,7 @@ interface UserFormProps {
 }
 
 const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
+  const { enqueueSnackbar } = useSnackbar();
   const subscriptions = useAppSelector(state => state.subscriptions.subscriptions);
   const loggedInUser = useAppSelector((state) => state.auth.user);
   const { register, handleSubmit, watch, setValue } = useForm({
@@ -40,12 +42,21 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
   });
   
   const onSubmitForm = (data: any) => {
+    if (!loggedInUser) {
+      enqueueSnackbar("Something went wrong!", { variant: 'error' });
+      return
+    }
     if(data.role !== 'user' && !initialValues) {
       data.subscription = null
     }
     if(initialValues) {
       data.password = "password"
     }
+    if(loggedInUser.role.includes('user')) {
+      data.subscription = (loggedInUser.subscription as Subscription)._id;
+      data.role = Role.USER;
+    }
+
     console.log('USER FORM>>', data)
     onSubmit(data);
   }
@@ -57,7 +68,8 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
         {loggedInUser && 
           loggedInUser.role.includes('admin') && 
           watch("role") == 'user' && 
-          <><FormControl fullWidth size="small" sx={{ mb: 1 }}>
+          <>
+          <FormControl fullWidth size="small" sx={{ mb: 1 }}>
           <InputLabel id="admin-label">Subscription</InputLabel>
           <Select
             id="subscription"
@@ -77,7 +89,8 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           </Select>
         </FormControl>
         <Divider sx={{ mb: 1 }} />
-        </>}
+        </>
+        }
 
         <TextField 
           id="first_name"
@@ -135,23 +148,27 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           {...register('phone' )}
         />
         <Divider sx={{ mb: 1 }} />
-        <FormControl sx={{ ml: 1 }}>
-          <FormLabel id="user-role-label">Role</FormLabel>
-          <RadioGroup
-            row
-            aria-labelledby="user-role-label"
-            name="user-role-radio-group"
-            value={watch("role")}
-            onChange={(e) => setValue("role", e.target.value)}
-          >
-            <FormControlLabel value="super_admin" control={<Radio />} label="Super Admin" />
-            <FormControlLabel value="admin" control={<Radio />} label="Admin" />
-            <FormControlLabel value="user" control={<Radio />} label="User" />
-            <FormControlLabel value="super_user" control={<Radio />} label="Super User" />
-          </RadioGroup>
-        </FormControl>
+        {loggedInUser && !loggedInUser.role.includes('user') && (
+          <>
+            <FormControl sx={{ ml: 1 }}>
+            <FormLabel id="user-role-label">Role</FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="user-role-label"
+              name="user-role-radio-group"
+              value={watch("role")}
+              onChange={(e) => setValue("role", e.target.value)}
+            >
+              <FormControlLabel value="super_admin" control={<Radio />} label="Super Admin" />
+              <FormControlLabel value="admin" control={<Radio />} label="Admin" />
+              <FormControlLabel value="user" control={<Radio />} label="User" />
+              <FormControlLabel value="super_user" control={<Radio />} label="Super User" />
+            </RadioGroup>
+            </FormControl>
 
-        <Divider sx={{ mb: 1 }} />
+            <Divider sx={{ mb: 1 }} />
+          </>
+        )}
 
         <Stack spacing={1} direction='row'> 
           <Button
