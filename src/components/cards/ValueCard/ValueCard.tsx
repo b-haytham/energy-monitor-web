@@ -3,6 +3,7 @@ import { Paper, PaperProps, Stack, Typography } from "@mui/material";
 import { Value } from "@api/types/value";
 
 import dayjs from 'dayjs';
+import { Circle, RecordVoiceOver } from "@mui/icons-material";
 
 interface ValueCardProps extends PaperProps {
   value: Value
@@ -21,11 +22,19 @@ const ValueCard = ({value, sx, ...rest}: ValueCardProps) => {
       }}
       {...rest}
     >
-      <Typography variant="h6">{value.name}</Typography>
+      <Stack direction="row" justifyContent={'space-between'} alignItems="center"> 
+        <Typography variant="h6">{value.name}</Typography>
+        {value.accessor == 's' && (<Circle fontSize="small" color={value.latest_value.value ? "success" : "error"} />)}
+      </Stack>
       <Stack>
-        <Typography >{value.latest_value.value ? value.latest_value.value.toFixed(2): "--.--"  }</Typography>
+        {value.accessor == 's' ? 
+        <Typography>-</Typography> : 
+        <Typography >{value.latest_value.value ? value.latest_value.value.toFixed(2): "--.--"  }</Typography>}
+        
         <Typography>
-          {value.latest_value.timestamp ? dayjs(new Date(value.latest_value.timestamp)).format("YYYY/MM/DD hh:mm:ss" ) : '--/--/-- --:--'}
+          {value.latest_value.timestamp ? 
+            dayjs(new Date(value.latest_value.timestamp)).format("YYYY/MM/DD hh:mm:ss" ) : 
+            '--/--/-- --:--'}
         </Typography>
       </Stack>
     </Paper>
