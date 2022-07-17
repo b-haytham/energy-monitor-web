@@ -20,7 +20,7 @@ import {
   Typography 
 } from "@mui/material"
 
-import { OpenInNewOutlined, SearchOutlined } from "@mui/icons-material";
+import { Circle, OpenInNewOutlined, SearchOutlined } from "@mui/icons-material";
 
 import { Device } from "@api/types/device";
 import { Value } from "@api/types/value";
@@ -143,11 +143,22 @@ const DevicesOverviewSection = ({ devices: initialDevices, ContainerProps }: Dev
                     dense 
                     secondaryAction={
                       <>
-                        <Typography align="right">
-                          {value.latest_value.value ? 
-                            `${value.latest_value.value.toFixed(2)} (${value.unit})` :  
-                            "NaN"}
-                        </Typography>
+                        {value.accessor !== 's' ? (
+                            <Typography align="right">
+                            {value.latest_value.value ? 
+                              `${value.latest_value.value.toFixed(2)} (${value.unit})` :  
+                              "NaN"}
+                            </Typography>
+                          ) : (
+                            <Typography align="right">
+                              <Circle 
+                                fontSize="small" 
+                                color={
+                                  value.latest_value.value == 1 ? 'success' : value.latest_value.value == 0 ? 'error': 'action' 
+                                } 
+                              />
+                            </Typography>
+                        )}
                         <Typography>
                           {value.latest_value.timestamp ? 
                             dayjs(new Date(value.latest_value.timestamp)).format('YYYY/MM/DD hh:mm:ss') : 
