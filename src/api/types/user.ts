@@ -28,6 +28,8 @@ export type User = {
 
   verified: boolean;
 
+  blocked: boolean;
+
   createdAt: string;
 
   updatedAt: string;

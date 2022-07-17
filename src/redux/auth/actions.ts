@@ -10,6 +10,7 @@ import { User } from "@api/types/user";
 import { alertsClearState } from "@redux/alerts/alertsSlice";
 import { reportsClearState } from "@redux/reports/reportsSlice";
 import { UpdateUserInfoDto } from "@api/users";
+import { updateLoggedInUser } from "./authSlice";
 
 export const login = createAsyncThunk<
   { access_token: string; user: User },
@@ -36,6 +37,7 @@ export const updateUserInfo = createAsyncThunk<
   try {
     const data: User = await api.users.updateInfo(params._id, params);
     thunkApi.dispatch(updateUserName(data));        
+    thunkApi.dispatch(updateLoggedInUser(data));        
     return data;
   } catch (error: any) {
     const messages: string[] = error.errors;

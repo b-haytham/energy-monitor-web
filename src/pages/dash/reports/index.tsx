@@ -4,23 +4,24 @@ import { useRouter } from 'next/router';
 import { Box, Paper } from '@mui/material'
 
 import PageHeader from '@components/PageHeader';
-import DevicesTable from '@components/tables/DevicesTable';
+import ReportsTable from '@components/tables/ReportsTable';
 
 import { handleServerSidePropsRejection } from '@utils/errors';
 
 import api from '@api';
-import { Device } from '@api/types/device';
+import { Report } from '@api/types/reports';
 
-interface DeviceProps {
-  devices: Device[]
+interface RapportsProps {
+  reports: Report[];
 }
 
-const Devices: NextPage<DeviceProps> = ({ devices }) => {
+const Rapports: NextPage<RapportsProps> = ({ reports }) => {
   const router = useRouter();
+
   return (
     <Box sx={{  height: 1, display: 'flex', flexDirection: 'column' }}>
       <PageHeader
-        title='Devices'
+        title='Reports'
         onBack={() => router.back()}
       />
 
@@ -32,32 +33,36 @@ const Devices: NextPage<DeviceProps> = ({ devices }) => {
           flex: 1,
         }}
       >
-        <DevicesTable
-          devices={devices} 
+        <ReportsTable
+          reports={reports}
           onView={(id) => {
-            router.push("/dash/devices/[id]", `/dash/devices/${id}`)
+            console.log(id);
           }}
-          onEdit={(id) => {}}
-          onDelete={(id) => {}}
+          onEdit={(id) => {
+            console.log(id);
+          }}
+          onDelete={(id) => { 
+            console.log(id);
+          }}
         />
       </Paper>
     </Box>
-  );
+  )
 }
+
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  console.log(req.url);
-  let devices: Device[];
+  let reports: Report[];
   try {
-    devices = await api.devices.find({ headers: req.headers, params: { p: "subscription" } }) 
-    console.log("Server ", devices);
+    reports = await api.reports.find({ headers: req.headers })
+    console.log('Server ', reports);
   } catch (error) {
     return handleServerSidePropsRejection(error, '/auth/login');
   }
   return {
     props: {
-      devices,
+      reports,
     }
   }
-} 
+}
 
-export default Devices;
+export default Rapports;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { createRef, useEffect, useRef, useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import {
   Chart as ChartJS,
@@ -9,10 +9,12 @@ import {
   Title,
   Tooltip,
   Legend,
+  TimeScale
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
-import ChartOptionsMenu from '../ChartOptionsMenu';
+import { useQuery, useQueryClient } from 'react-query';
+import api from '@api';
 
 // register chart components
 ChartJS.register(
@@ -22,60 +24,82 @@ ChartJS.register(
   PointElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  TimeScale
 );
+
+//@ts-ignore
+import 'chartjs-adapter-date-fns';
+import socket from 'src/socket';
 
 interface PowerChartProps {
   subscription: string;
   device: string;
 }
 
-const fakeNumber = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
+const PowerChart = ({ subscription, device }: PowerChartProps) => {
+  const queryClient = useQueryClient();
+  const chartRef = createRef<ChartJS<'line'>>()   
+  const { data: d } = useQuery<{t: string; v: string}[]>([`power-${device}`], () => {
+    return api.data.power({ s: subscription, d: device })
+  })
 
-const PowerChart = ({}: PowerChartProps) => {
-  const [chartTime, setChartTime] = useState('1m');
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  useEffect(() => {
+    socket.on(`notification/${device}`, (data) => {
+      // const queryData = queryClient.getQueryData([`power-${device}`])
+      // 
+      // queryClient.setQueryData([`power-${device}`], (cached) => {
+      //   //@ts-ignore
+      //   return [...cached, data];
+      // })
+      const chart = chartRef.current;
+      chart?.data?.datasets[0].data?.shift();
+
+      chart?.data?.datasets[0].data?.push({ x: data.t, y: data.p['p'] });
+
+      chart?.update();
+    })
+    return () => {
+      socket.off(`notification/${device}`)
+    }
+  }, [device])
+
   return (
     <Box style={{ height: 400,  position: 'relative' }}>
       <Stack direction={"row"} justifyContent={"space-between"}>
-        <Typography variant="h6">Power Chart</Typography> 
-        <ChartOptionsMenu 
-          value={chartTime}
-          items={[
-            { label: '1 Day', value: '1d' },
-            { label: '1 Month', value: '1m' },
-            { label: '1 Year', value: '1y' },
-          ]}
-          onChange={(value) => {
-            setChartTime(value);
-          }}
-        />
+        <Typography variant="h6">Power Last 2 days</Typography> 
       </Stack>
       <div style={{ position: 'relative', height: '100%', width: '99%' }}>
         <Line
+          //@ts-ignore
+          ref={chartRef}
           options={{
             responsive: true,
             maintainAspectRatio: false,
+            animation: false,
             plugins: {
               legend: {
                 position: 'top' as const,
               },
             },
+           scales: {
+              x: {
+                type: 'time',
+                time: {
+                  unit: 'minute',
+                },
+                displayFormats: {
+                  hour: "hh:mm"
+                }
+              }
+            }
           }}
           data={{
-            labels,
             datasets: [
               {
-                label: 'Dataset 1',
-                data: labels.map(() => fakeNumber(0, 1000)),
+                label: 'Power (kw)',
+                data: d ? [...d.map((it) => ({x: it.t, y: it.v}))] : [],
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
-              },
-              {
-                label: 'Dataset 2',
-                data: labels.map(() => fakeNumber(0,1000)),
-                backgroundColor: 'rgba(53, 162, 235, 0.5)',
               },
             ],
           }}

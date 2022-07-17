@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, params }) =>
     ); 
     console.log("Server ", device);
   } catch (error) {
-    return handleServerSidePropsRejection(error);  
+    return handleServerSidePropsRejection(error, '/auth/login');  
   }
 
   return {

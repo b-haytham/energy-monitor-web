@@ -25,13 +25,14 @@ import { useAppDispatch } from '@redux/store';
 
 import socket from 'src/socket';
 import { useDisclosure } from '@mantine/hooks';
+import { useSnackbar } from 'notistack';
 
 interface LoginProps {}
 
 const Login = ({}: LoginProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-
+  const { enqueueSnackbar } = useSnackbar();
   const [passwordVisible, passwordVisibitiy] = useDisclosure(false);
   
   const { register, handleSubmit } = useForm({
@@ -51,6 +52,10 @@ const Login = ({}: LoginProps) => {
           socket.emit('authenticate', { access_token });
           router.push('/admin/dash');
         })
+      })
+      .catch(err => {
+        enqueueSnackbar(err.message || "Something Wen't Wrong!", { variant: 'error' });
+        console.error(err);
       });
   }
 
@@ -78,6 +83,7 @@ const Login = ({}: LoginProps) => {
                 sx={{ mb: 2 }}
                 {...register('password')}  
                 InputProps={{
+                  sx: { borderRadius: 2 },
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton size="small" onClick={passwordVisibitiy.toggle}>

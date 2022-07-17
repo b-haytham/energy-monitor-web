@@ -1,5 +1,5 @@
 import { User } from "@api/types/user";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { changePassword, login, logout, updateUserInfo } from "./actions";
 
 // Define a type for the slice state
@@ -23,6 +23,12 @@ const authSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    updateLoggedInUser(state, action: PayloadAction<User>) {
+      if(state.user && state.user._id == action.payload._id) {
+        state.user.first_name = action.payload.first_name;
+        state.user.last_name = action.payload.last_name;
+      }
+    },
     authClearErrors: (state) => {
       state.errors = [];
     },
@@ -77,6 +83,10 @@ const authSlice = createSlice({
   },
 });
 
-export const { authClearErrors, authClearState } = authSlice.actions;
+export const { 
+  authClearErrors, 
+  authClearState, 
+  updateLoggedInUser 
+} = authSlice.actions;
 
 export default authSlice.reducer;
