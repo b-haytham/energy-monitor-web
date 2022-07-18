@@ -21,8 +21,6 @@ import { SnackbarProvider } from 'notistack';
 
 import NextComponent from '@components/NextComponent';
 
-import { persistQueryClient } from 'react-query/persistQueryClient-experimental'
-import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental'
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 

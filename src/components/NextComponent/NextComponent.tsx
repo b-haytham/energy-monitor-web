@@ -1,6 +1,7 @@
 import Layout from "@components/Layout";
 import { addTriggeredAlert } from "@redux/alerts/alertsSlice";
 import { deviceHandleNotification } from "@redux/devices/devicesSlice";
+import { addAppNotification } from "@redux/global/globalSlice";
 import { createReport } from "@redux/reports/reportsSlice";
 import { useAppDispatch } from "@redux/store";
 import { NextComponentType, NextPageContext } from "next";
@@ -33,11 +34,13 @@ const NextComponent = ({ Component, pageProps }: NextComponentProps) =>  {
     socket.on('report-generated', (data) => {
       console.log('WS_REPORT_GENERATED', data);
       dispatch(createReport(data));
+      dispatch(addAppNotification({ type: "Report Generated", ...data }))
     })
 
     socket.on('triggered-alert', (data) => {
       console.log('WS_TRIGGERED_ALERT', data);
       dispatch(addTriggeredAlert(data));
+      dispatch(addAppNotification({ type: "Triggered Alert", ...data }))
     })
 
     return () => {

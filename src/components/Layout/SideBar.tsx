@@ -85,7 +85,7 @@ const SideBar = ({}: SideBarProps) => {
           />
 
           <SideBarListItem
-            selected={router.pathname.includes("dash") && router.pathname.includes("rapports")}
+            selected={router.pathname.includes("dash") && router.pathname.includes("reports")}
             text="Reports"
             icon={<InsightsOutlinedIcon />}
             onClick={() => {
