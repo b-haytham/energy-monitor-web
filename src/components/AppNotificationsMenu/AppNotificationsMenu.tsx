@@ -97,8 +97,8 @@ const AppNotificationsMenu = () => {
     switch (notification.data.type) {
       case AppNotificationType.TriggeredAlert:
         return loggedInUser.role.includes('admin') ?  
-          `/admin/dash/alerts/${notification.data._id}`
-          : `/dash/alerts/${notification.data._id}`
+          `/admin/dash/alerts/${notification.data.alert._id}`
+          : `/dash/alerts/${notification.data.alert._id}`
 
       case AppNotificationType.ReportGenerated:
         return loggedInUser.role.includes('admin') ?  
@@ -128,20 +128,6 @@ const AppNotificationsMenu = () => {
       >
         <Stack direction="row" justifyContent="space-between" sx={{ p: 2 }}>
           <Typography variant="h6">Notifications</Typography>
-          <Stack direction="row" justifyContent="space-between" spacing={1}>
-            <IconButton
-              size="small"
-              onClick={() => {}}
-            >
-              <MarkChatReadOutlined />
-            </IconButton>
-            <IconButton
-              size="small"
-              onClick={() => {}}
-            >
-              <DeleteOutlineSharp />
-            </IconButton>
-          </Stack>
         </Stack>
         <Divider />
         {notifications.length == 0 && (

@@ -16,7 +16,7 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
   
   const { register, handleSubmit, watch, setValue } = useForm({
       defaultValues: {
-        device: (initialValues?.device as Device)._id ?? "",
+        device: (initialValues?.device as Device)?._id ?? "",
         value_name: initialValues?.value_name ?? "",
         if: {
           condition: initialValues?.if.condition ?? AlertCondition.GREATER_THAN,
@@ -34,6 +34,7 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
   })
 
   const onSubmitForm = (data: any) => {
+    data.if.value = +data.if.value
     onSubmit(data);
   }
   return (

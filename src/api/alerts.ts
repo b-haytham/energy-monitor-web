@@ -4,6 +4,7 @@ import { ApiError } from "@utils/errors";
 import { NextConfig } from "next";
 import getConfig from "next/config";
 import { Alert } from "./types/alert";
+import { TriggeredAlert } from "./types/triggered-alert";
 
 const { publicRuntimeConfig }: NextConfig = getConfig();
 
@@ -35,6 +36,19 @@ export namespace alerts {
       });
 
       return data as Alert[]; 
+    } catch (error) {
+      throw new ApiError(error);
+    }
+  }
+
+
+  export const findTriggeredAlerts = async (id: string, queryOptions?: QueryAlertOptions) => {
+    try {
+      const { data } = await axios.get(`${base_url}/alerts/${id}/triggered`, {
+        headers: queryOptions?.headers,
+      });
+
+      return data as { alert: Alert; triggeredAlerts: TriggeredAlert[]; }; 
     } catch (error) {
       throw new ApiError(error);
     }

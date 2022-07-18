@@ -16,8 +16,8 @@ const value_map = {
   i2: 'Current 2',
   i3: 'Current 3',
   u1: 'Tension 1',
-  u2: 'Tension 1',
-  u3: 'Tension 1',
+  u2: 'Tension 2',
+  u3: 'Tension 3',
 }
 
 interface AlertsTableProps {

@@ -108,9 +108,9 @@ const Alerts: NextPage<AlertsPageProps> = ({ alerts: serverAlerts }) => {
       >
         <AlertsTable 
           alerts={alerts}
-          // onView={(id) => {
-          //   console.log(id);
-          // }}
+          onView={(id) => {
+            router.push(`/dash/alerts/${id}`);
+          }}
           onEdit={(id) => {
             const alert = alerts.find(alert => alert._id == id)
             setAlertToUpdate(alert || null);
