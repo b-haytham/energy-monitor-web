@@ -1,8 +1,17 @@
 import React from "react";
 
-import { alpha, Button, Divider, IconButton, Menu, MenuItem, MenuProps, styled } from "@mui/material";
+import { 
+  alpha, 
+  Box, 
+  Divider, 
+  IconButton, 
+  Menu, 
+  MenuItem, 
+  MenuProps, 
+  styled 
+} from "@mui/material";
 
-import { Archive, Delete, Edit, FileCopy, MoreHoriz, MoreVert, Visibility } from "@mui/icons-material";
+import { Delete, Edit, MoreVert, Visibility } from "@mui/icons-material";
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -46,9 +55,9 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 interface TableOptionsMenuProps {
-  onView: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
+  onView?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const TableOptionsMenu = ({ onEdit, onView, onDelete }: TableOptionsMenuProps) => {
@@ -60,6 +69,11 @@ const TableOptionsMenu = ({ onEdit, onView, onDelete }: TableOptionsMenuProps) =
   const handleClose = () => {
     setAnchorEl(null);
   };
+  
+  if (!onDelete && !onEdit && !onView) {
+    return null;
+  }
+
   return (
     <>
       <IconButton size="small" onClick={handleClick}>
@@ -73,8 +87,9 @@ const TableOptionsMenu = ({ onEdit, onView, onDelete }: TableOptionsMenuProps) =
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-      >
-        <MenuItem 
+      > 
+        {!onDelete && !onEdit && !onView && <Box />}
+        {onView && <MenuItem 
           onClick={() => {
             onView();
             handleClose();
@@ -83,8 +98,8 @@ const TableOptionsMenu = ({ onEdit, onView, onDelete }: TableOptionsMenuProps) =
         >
           <Visibility />
           View
-        </MenuItem>
-        <MenuItem 
+        </MenuItem>}
+        {onEdit && <MenuItem 
           onClick={() => {
             onEdit();
             handleClose();
@@ -93,19 +108,19 @@ const TableOptionsMenu = ({ onEdit, onView, onDelete }: TableOptionsMenuProps) =
         >
           <Edit />
           Edit
-        </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem 
-          onClick={() => {
-            onDelete();
-            handleClose();
-          }} 
-          disableRipple 
-          color="secondary"
-        >
-          <Delete />
-          Delete
-        </MenuItem>
+        </MenuItem>}
+        {onDelete && <Divider sx={{ my: 0.5 }} />}
+        {onDelete && <MenuItem 
+            onClick={() => {
+              onDelete();
+              handleClose();
+            }} 
+            disableRipple 
+            color="secondary"
+          >
+            <Delete />
+            Delete
+          </MenuItem>}
       </StyledMenu>
     </>
   )

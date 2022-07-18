@@ -22,7 +22,7 @@ export type Device = {
 
   energie: number;
   
-  values: string[] | Value[];
+  values: Value[];
 
   blocked: boolean;
 

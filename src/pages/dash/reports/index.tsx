@@ -38,12 +38,12 @@ const Rapports: NextPage<RapportsProps> = ({ reports }) => {
           onView={(id) => {
             console.log(id);
           }}
-          onEdit={(id) => {
-            console.log(id);
-          }}
-          onDelete={(id) => { 
-            console.log(id);
-          }}
+          // onEdit={(id) => {
+          //   console.log(id);
+          // }}
+          // onDelete={(id) => { 
+          //   console.log(id);
+          // }}
         />
       </Paper>
     </Box>

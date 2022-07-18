@@ -7,9 +7,9 @@ import { User } from "@api/types/user";
 
 interface UsersTableProps {
   users: User[],
-  onView: (id: string) => void
-  onEdit: (id: string) => void
-  onDelete: (id: string) => void
+  onView?: (id: string) => void
+  onEdit?: (id: string) => void
+  onDelete?: (id: string) => void
 }
 
 const UsersTable = ({ users, onEdit, onView, onDelete }: UsersTableProps) => {
@@ -62,9 +62,9 @@ const UsersTable = ({ users, onEdit, onView, onDelete }: UsersTableProps) => {
       headerName: 'Status',
       flex: 1,
       minWidth: 200,
-      // valueGetter: (params: GridValueGetterParams) => params.row.blocked,
-      renderCell: ({}) => {
-        return <Chip size="small" label={"Active"} color={"success"} />;
+      valueGetter: (params: GridValueGetterParams) => params.row.blocked,
+      renderCell: ({ value }) => {
+        return <Chip size="small" label={value ? 'Blocked' : 'Active'} color={value ? "error" : "success"} />;
       }
     },
     {
@@ -75,9 +75,9 @@ const UsersTable = ({ users, onEdit, onView, onDelete }: UsersTableProps) => {
       renderCell: ({ row }) => {
         return (
           <TableOptionsMenu 
-            onView={() => onView(row._id)}
-            onEdit={() => onEdit(row._id)}
-            onDelete={() => onDelete(row._id)}
+            onView={onView ? () => onView(row._id) : undefined}
+            onEdit={onEdit ? () => onEdit(row._id) : undefined}
+            onDelete={onDelete ? () =>  onDelete(row._id) : undefined}
           />
         );
       }

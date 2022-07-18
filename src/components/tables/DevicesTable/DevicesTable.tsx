@@ -7,9 +7,9 @@ import { Device } from "@api/types/device";
 
 interface DevicesTableProps {
   devices: Device[]
-  onView: (id: string) => void
-  onEdit: (id: string) => void
-  onDelete: (id: string) => void
+  onView?: (id: string) => void
+  onEdit?: (id: string) => void
+  onDelete?: (id: string) => void
 }
 
 const DevicesTable = ({ 
@@ -73,9 +73,9 @@ const DevicesTable = ({
       renderCell: ({ row }) => {
         return (
           <TableOptionsMenu 
-            onView={() => onView(row._id)}
-            onEdit={() => onEdit(row._id)}
-            onDelete={() => onDelete(row._id)}
+            onView={onView ? () => onView(row._id) : undefined}
+            onEdit={onEdit ? () => onEdit(row._id) : undefined}
+            onDelete={onDelete ? () =>  onDelete(row._id) : undefined}
           />
         );
       }

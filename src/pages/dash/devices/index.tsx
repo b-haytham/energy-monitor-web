@@ -37,8 +37,8 @@ const Devices: NextPage<DeviceProps> = ({ devices }) => {
           onView={(id) => {
             router.push("/dash/devices/[id]", `/dash/devices/${id}`)
           }}
-          onEdit={(id) => {}}
-          onDelete={(id) => {}}
+          // onEdit={(id) => {}}
+          // onDelete={(id) => {}}
         />
       </Paper>
     </Box>

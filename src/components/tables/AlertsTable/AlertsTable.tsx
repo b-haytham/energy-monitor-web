@@ -22,9 +22,9 @@ const value_map = {
 
 interface AlertsTableProps {
   alerts: Alert[]
-  onView: (id: string) => void
-  onEdit: (id: string) => void
-  onDelete: (id: string) => void
+  onView?: (id: string) => void
+  onEdit?: (id: string) => void
+  onDelete?: (id: string) => void
 }
 
 const AlertsTable = ({ 
@@ -89,9 +89,9 @@ const AlertsTable = ({
       renderCell: ({ row }) => {
         return (
           <TableOptionsMenu 
-            onView={() => onView(row._id)}
-            onEdit={() => onEdit(row._id)}
-            onDelete={() => onDelete(row._id)}
+            onView={onView ? () => onView(row._id) : undefined}
+            onEdit={onEdit ? () => onEdit(row._id) : undefined}
+            onDelete={onDelete ? () =>  onDelete(row._id) : undefined}
           />
         );
       }

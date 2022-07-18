@@ -7,9 +7,9 @@ import { Subscription } from "@api/types/subscription";
 
 interface SubscriptionsTableProps {
   subscriptions: Subscription[]
-  onView: (id: string) => void;
-  onEdit: (id: string) => void;
-  onDelete: (id: string) => void;
+  onView?: (id: string) => void;
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 const SubscriptionsTable = ({ subscriptions, onView, onEdit, onDelete }: SubscriptionsTableProps) => {
@@ -85,9 +85,9 @@ const SubscriptionsTable = ({ subscriptions, onView, onEdit, onDelete }: Subscri
       renderCell: ({ row }) => {
         return (
           <TableOptionsMenu 
-            onView={() => onView(row._id)}
-            onEdit={() => onEdit(row._id)}
-            onDelete={() => onDelete(row._id)}
+            onView={onView ? () => onView(row._id) : undefined}
+            onEdit={onEdit ? () => onEdit(row._id) : undefined}
+            onDelete={onDelete ? () =>  onDelete(row._id) : undefined}
           />
         );
       }

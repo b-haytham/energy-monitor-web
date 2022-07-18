@@ -1,23 +1,9 @@
-import { 
-  Box, 
-  Button, 
-  Divider, 
-  FormControl, 
-  InputLabel, 
-  MenuItem, 
-  Select, 
-  Stack, 
-  TextField, 
-  Typography 
-} from "@mui/material";
-import { useForm } from "react-hook-form";
-
-import { useAppSelector } from "@redux/store";
-
-import { Device } from "@api/types/device";
 import { Alert, AlertCondition } from "@api/types/alert";
+import { Device } from "@api/types/device";
+import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { useAppSelector } from "@redux/store";
 import { useState } from "react";
-import { Value } from "@api/types/value";
+import { useForm } from "react-hook-form";
 
 interface AlertFormProps {
   onSubmit: (data: any) => void;
@@ -27,47 +13,43 @@ interface AlertFormProps {
 
 const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
   const devices = useAppSelector(state => state.devices.devices);
-  const loggedInUser = useAppSelector(state => state.auth.user); 
   
-  const [selectedDevice, setSelectedDevice] = useState<Device | null>(() => {
-    const device = initialValues?.device as Device || null
-    return device;
-  }) 
-
   const { register, handleSubmit, watch, setValue } = useForm({
       defaultValues: {
-        device: (initialValues?.device as Device)?._id ?? "",
+        device: (initialValues?.device as Device)._id ?? "",
         value_name: initialValues?.value_name ?? "",
         if: {
-          condition: initialValues?.if?.condition ?? AlertCondition.GREATER_THAN,
-          value: initialValues?.if?.value ?? 0
+          condition: initialValues?.if.condition ?? AlertCondition.GREATER_THAN,
+          value: initialValues?.if.value ?? 0
         }
       } 
   });
+  
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(() => {
+    if(initialValues) {
+      const device = devices.find(dev => dev._id == (initialValues.device as Device)._id);
+      return device || null;
+    }
+    return null;
+  })
 
   const onSubmitForm = (data: any) => {
-    onSubmit({
-      user: loggedInUser?._id ?? null, 
-      ...data, 
-      if: { ...data.if, value: +data.if.value }
-    });
+    onSubmit(data);
   }
-
   return (
     <Box sx={{ mt: 1 }}>
       <form onSubmit={handleSubmit(onSubmitForm)}>
-
         <FormControl fullWidth size="small" sx={{ mb: 1 }}>
           <InputLabel id="device-label">Device</InputLabel>
           <Select
             id="device"
             labelId="device-label"
-            label="Device"
+            label="device"
             value={watch("device")}
             onChange={(e) => {
+              const device = devices.find(dev => dev._id == e.target.value);
               setValue("device", e.target.value)
-              const device = devices.find(device => device._id == e.target.value);
-              setSelectedDevice(device || null)
+              setSelectedDevice(device || null);
             }}
           >
             <MenuItem>
@@ -81,9 +63,10 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
           </Select>
         </FormControl>
 
-        <Divider sx={{ my: 1 }} />
-        
-        <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+        <Divider sx={{ mb: 1 }} />
+        <Typography sx={{ ml: 1, mb: 1 }} variant="h6"> IF </Typography>
+         
+        <FormControl fullWidth size="small" sx={{ mb: 2 }}>
           <InputLabel id="value-label">Value name</InputLabel>
           <Select
             id="value_name"
@@ -93,19 +76,17 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
             onChange={(e) => setValue("value_name", e.target.value)}
           >
             <MenuItem>
-              <em>None</em>
+              <em>{!selectedDevice ? 'Pick device' : 'None'}</em>
             </MenuItem>
-            {selectedDevice && (selectedDevice.values as Value[]).map((value) => (
-              <MenuItem key={value._id} value={value.accessor}>
+            {selectedDevice && selectedDevice.values.map((value) => (
+              <MenuItem key={value.accessor} value={value.accessor}>
                 {value.name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
 
-        <Typography variant="body1" fontWeight='bold' sx={{ mb: 2 }}> If (value) </Typography>
-         
-        <Stack spacing={1} direction='row'>
+        <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
           <FormControl fullWidth size="small" sx={{ mb: 1 }}>
             <InputLabel id="condition-label">Condition</InputLabel>
             <Select
@@ -126,18 +107,8 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
                 </MenuItem>
             </Select>
           </FormControl>
-          
-          <TextField
-            id="value"
-            label="Value"
-            variant="outlined" 
-            required
-            type="number"
-            fullWidth
-            size="small"
-            sx={{ mb: 1 }}
-            {...register('if.value' )}
-          />
+
+          <TextField id="value" label="Value" type="number"  {...register('if.value')} />
         </Stack>
 
         <Stack spacing={1} direction='row'> 
@@ -158,10 +129,9 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
             Submit 
           </Button>
         </Stack>
-
       </form>
     </Box>
-  );
+  )
 }
 
 export default AlertForm;

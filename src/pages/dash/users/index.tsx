@@ -100,9 +100,9 @@ const Users: NextPage<UsersProps> = ({ users: serverUsers }) => {
       >
         <UsersTable 
           users={users} 
-          onView={(id) => {
-            console.log(id);
-          }}
+          // onView={(id) => {
+          //   console.log(id);
+          // }}
           onEdit={(id) => {
             const user = users.find(u => u._id == id);
             setUserToUpdate(user || null);

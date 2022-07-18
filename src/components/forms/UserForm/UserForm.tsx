@@ -3,6 +3,7 @@ import { Role, User } from "@api/types/user";
 import { 
   Box, 
   Button, 
+  Checkbox, 
   Divider, 
   FormControl, 
   FormControlLabel, 
@@ -38,6 +39,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
         subscription: initialValues ? (initialValues.subscription as Subscription)._id : "",
         role: initialValues?.role ?? "user",
         phone: initialValues?.phone ?? "",
+        blocked: initialValues?.blocked ?? false
       }
   });
   
@@ -88,7 +90,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
             ))}
           </Select>
         </FormControl>
-        <Divider sx={{ mb: 1 }} />
+        <Divider sx={{ mb: 2 }} />
         </>
         }
 
@@ -99,7 +101,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           required
           fullWidth
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('first_name' )}
         />
 
@@ -110,7 +112,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           required
           fullWidth
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('last_name' )}
         />
 
@@ -121,7 +123,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           required
           fullWidth
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('email' )}
         />
 
@@ -133,7 +135,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           type="password"
           fullWidth
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('password' )}
         />}
 
@@ -144,7 +146,7 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           required
           fullWidth
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('phone' )}
         />
         <Divider sx={{ mb: 1 }} />
@@ -170,6 +172,23 @@ const UserForm = ({ onSubmit, onCancel, initialValues }: UserFormProps) => {
           </>
         )}
 
+        {initialValues && (
+          <>
+            <FormControlLabel
+              value="end"
+              control={
+                <Checkbox 
+                  checked={watch('blocked')} 
+                  onChange={(e) => setValue("blocked", e.target.checked)} 
+                />
+              }
+              label="Blocked"
+              labelPlacement="end"
+              sx={{ ml: 0 }}
+            /> 
+            <Divider sx={{ my: 1 }} />
+          </>
+        )}
         <Stack spacing={1} direction='row'> 
           <Button
             variant="outlined" 
