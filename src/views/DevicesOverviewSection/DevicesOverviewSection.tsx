@@ -118,6 +118,18 @@ const DevicesOverviewSection = ({ devices: initialDevices, ContainerProps }: Dev
       </Grid>
       <Grid item xs={12} md={6}>
         <Paper variant={'outlined'} sx={{ borderRadius: 2, display: 'flex', flexDirection: 'column', height: 500 }}>
+          {!selectedDevice && (
+            <Box 
+              sx={{ 
+                height: 1, 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center' 
+              }}
+            >
+              <Typography>Select Device</Typography>
+            </Box>
+          )}
           {selectedDevice && (
             <>
               <Stack direction="row" justifyContent="space-between" alignItems={'center'} p={2}>
