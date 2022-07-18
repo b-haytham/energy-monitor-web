@@ -1,5 +1,6 @@
 import AppNotificationsMenu from "@components/AppNotificationsMenu";
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import ProfileMenu from "@components/ProfileMenu";
+import { AppBar, Stack, Toolbar, Typography } from "@mui/material";
 
 interface HeaderProps {}
 
@@ -16,8 +17,11 @@ const Header = ({}: HeaderProps) => {
         <Typography variant="h6" color="inherit">
           Engy
         </Typography>
-        <AppNotificationsMenu />
-      </Toolbar>
+        <Stack direction="row" spacing={2}>
+          <AppNotificationsMenu />
+          <ProfileMenu />
+        </Stack>
+     </Toolbar>
     </AppBar>
   )
 }
