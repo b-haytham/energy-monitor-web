@@ -7,6 +7,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  TimeScale,
 } from 'chart.js';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -23,8 +24,12 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  TimeScale,
 );
+
+//@ts-ignore
+import 'chartjs-adapter-date-fns';
 
 interface EnergieConsumptionChartProps {
   subscription: string;
@@ -36,9 +41,21 @@ const EnergieConsumptionChart = ({ subscription, device }: EnergieConsumptionCha
   const [chartTime, setChartTime] = useState('1m')
   
   const { data: energieData, isLoading } = useQuery(
-    ["energie-data", chartTime], 
+    [`energie-data-${device}`, chartTime], 
     ({ queryKey }) => api.data.energie({ s: subscription, d: device, t: queryKey[1] as any })
   )
+    
+  console.log('energieData', energieData);
+
+  const getDataset = (data?: any[]) => {
+    if(!data) return [];
+
+    if(data.length == 0) return [];
+
+    if(data.length == 1) return data.map(d =>({ x: d._id, y: d.consumed }));
+
+    return data.map(d => ({ x: d._id, y: d.consumed }));
+  }
 
   return (
     <Box style={{ height: 400,  position: 'relative' }}>
@@ -69,13 +86,23 @@ const EnergieConsumptionChart = ({ subscription, device }: EnergieConsumptionCha
                 position: 'top' as const,
               },
             },
+            scales: {
+              x: {
+                type: 'time',
+                time: {
+                  unit: chartTime == '1d' ? 'hour' : chartTime == '1m' ? "day" : 'month'
+                }
+              },
+            }
           }}
           data={{
-            labels: energieData ? energieData.slice(1).map((d) => d._id) : [],
+            // labels: energieData ? energieData.slice(1).map((d) => d._id) : [],
+            // labels: getLabels(energieData),
             datasets: [
               {
                 label: "Energie (kw/h)",
-                data: energieData ? energieData.slice(1).map((d) => d.consumed) : [],
+                // data: energieData ? energieData.slice(1).map((d) => d.consumed) : [],
+                data: getDataset(energieData),
                 backgroundColor: theme.palette.primary.main,
               },
             ],

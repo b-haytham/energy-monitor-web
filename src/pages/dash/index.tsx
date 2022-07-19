@@ -16,7 +16,7 @@ const Dashboard: NextPage = ({}) => {
   const devices = useAppSelector(state => state.devices.devices);
   return (
     <Box sx={{ height: '100%' }}>
-      <EnergieOverview />
+      <EnergieOverview subscription={(loggedInUser?.subscription as Subscription)?._id} />
 
       <ChartContainer
         sx={{ height: 500, mt: 2 }}

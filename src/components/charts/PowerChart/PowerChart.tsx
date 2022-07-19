@@ -86,11 +86,11 @@ const PowerChart = ({ subscription, device }: PowerChartProps) => {
               x: {
                 type: 'time',
                 time: {
-                  unit: 'minute',
+                  unit: 'hour',
                 },
-                displayFormats: {
-                  hour: "hh:mm"
-                }
+                // displayFormats: {
+                //   hour: "hh:mm"
+                // }
               }
             }
           }}

@@ -72,7 +72,7 @@ const SubscriptionDetail = ({ subscription: serverSubscription }: SubscriptionDe
       />
       {showMore && (<SubscriptionInfo subscription={subscription} />)}
 
-      <EnergieOverview sx={{ mt: 0 }} />
+      <EnergieOverview subscription={subscription._id} sx={{ mt: 0 }} />
 
       <ChartContainer
         sx={{ height: 500, mt: 2 }}

@@ -9,6 +9,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  TimeScale
 } from 'chart.js';
 import { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
@@ -23,8 +24,12 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  TimeScale
 );
+
+//@ts-ignore
+import 'chartjs-adapter-date-fns';
 
 interface EnergieConsumptionChartProps {
   subscription: string
@@ -46,7 +51,7 @@ const EnergieConsumptionChart = ({ devices, subscription }: EnergieConsumptionCh
   const [chartTime, setChartTime] = useState('1m');
 
   const { data: energieData, isLoading } = useQuery(
-    ["total-energie-data", chartTime], 
+    [`total-energie-${subscription}`, chartTime], 
     ({ queryKey }) => {
       const promises = devices.map(device => api.data.energie({ s: subscription, d: device._id, t: queryKey[1] as any }))
       return Promise.all(promises);
@@ -54,9 +59,18 @@ const EnergieConsumptionChart = ({ devices, subscription }: EnergieConsumptionCh
   )
   // console.log("Total energie data >>", energieData);
   
-  const isNotEmpty = energieData?.find(d => d.length > 0)
 
-  const labels =  isNotEmpty ? isNotEmpty.slice(1).map(d => d._id) : [];
+  const getDatasets = (data?: any[]) => {
+    if (!data) return [];
+
+    return data.map((chunk, idx) => ({
+      label: devices[idx] ? devices[idx].name : "Unknown",
+      data: chunk.map((d: any) =>({ x: d._id, y: d.consumed})),
+      backgroundColor: colorArray[idx],
+    }))
+  }
+
+  console.log(energieData);
   return (
     <Box style={{ height: 400,  position: 'relative' }}>
       <Stack direction={"row"} justifyContent={"space-between"}>
@@ -88,7 +102,11 @@ const EnergieConsumptionChart = ({ devices, subscription }: EnergieConsumptionCh
             },
             scales: {
               x: {
+                type: 'time',
                 stacked: true,
+                time: {
+                  unit: chartTime == '1d' ? 'hour' : chartTime == '1m' ? "day" : 'month'
+                }
               },
               y: {
                 stacked: true,
@@ -96,13 +114,7 @@ const EnergieConsumptionChart = ({ devices, subscription }: EnergieConsumptionCh
             },
           }}
           data={{
-            labels,
-            //@ts-ignore
-            datasets: energieData?.map((entry, idx) => ({ 
-              label: devices[idx] ? devices[idx].name : [], 
-              data: entry.slice(1).map(d =>d.consumed),
-              backgroundColor: colorArray[idx]
-            })) ?? []
+            datasets: getDatasets(energieData),
           }}
         />
       </div>
