@@ -9,7 +9,7 @@ import { Subscription } from "@api/types/subscription";
 
 interface DeviceInfoProps {
   device: Device;
-  token: string
+  token?: string
 }
 
 const DeviceInfo = ({ device, token }: DeviceInfoProps) => {
@@ -89,7 +89,7 @@ const DeviceInfo = ({ device, token }: DeviceInfoProps) => {
           </List>
         </Grid>
       </Grid>
-      <ListItem 
+      {token && <ListItem 
         disablePadding 
         secondaryAction={
           <IconButton 
@@ -110,7 +110,7 @@ const DeviceInfo = ({ device, token }: DeviceInfoProps) => {
           secondary={token} 
           sx={{ width: 100, wordWrap: 'break-word' }}
         />
-      </ListItem>
+      </ListItem>}
     </Paper>
   )
 }
