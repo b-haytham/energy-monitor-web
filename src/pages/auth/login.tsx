@@ -29,6 +29,8 @@ const Login = ({}: LoginProps) => {
     dispatch(login(data))
       .unwrap()
       .then(({ user, access_token }) => {
+        if(user.role.includes('admin')) throw new Error("Login page for users")
+
         dispatch(fetchAll(user))
         .unwrap()
         .then(() => {
