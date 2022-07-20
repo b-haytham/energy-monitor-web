@@ -21,9 +21,11 @@ import SideBarListItem from "./SideBarListItem";
 import { useAppDispatch, useAppSelector } from "@redux/store";
 import { logout } from "@redux/auth/actions";
 
-interface SideBarProps {}
+interface SideBarProps {
+  open: boolean;
+}
 
-const SideBar = ({}: SideBarProps) => {
+const SideBar = ({ open }: SideBarProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const userRole = useAppSelector((state) => state.auth.user?.role);
@@ -33,11 +35,13 @@ const SideBar = ({}: SideBarProps) => {
       open
       variant="persistent"
       sx={{
-        width: "240px",
+        width: { md: "240px", xs: open ? '240px' : 0 },
+        transition: "width 0.5s",
       }}
       PaperProps={{
         sx: {
-          width: "240px",
+          width: { md: "240px", xs: open ? '240px' :  0 },
+          transition: "width 0.5s",
         },
       }}
     >

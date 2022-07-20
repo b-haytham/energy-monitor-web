@@ -1,4 +1,5 @@
-import { useTheme, Box } from "@mui/material";
+import { useTheme, Box, useMediaQuery } from "@mui/material";
+import { useState } from "react";
 
 import Header from "./Header";
 import SideBar from "./SideBar";
@@ -8,6 +9,13 @@ interface LayoutProps {
 }
 const Layout = ({ children }: LayoutProps) => {
   const theme = useTheme();
+  const matchesDownMd = useMediaQuery(theme.breakpoints.down('md'));
+  const [drawerOpen, setDrawerOpen] = useState(!matchesDownMd);
+  
+  const handleOpen = () => setDrawerOpen(true);
+
+  const handleClose = () => setDrawerOpen(false);
+
   return (
     <Box
       sx={{
@@ -15,8 +23,13 @@ const Layout = ({ children }: LayoutProps) => {
         minHeight: "100vh",
       }}
     >
-      <Header />
-      <SideBar />
+      <Header 
+        open={drawerOpen}
+        handleOpen={handleOpen}
+        handleClose={handleClose}
+      />
+      
+      <SideBar open={drawerOpen} />
 
       <Box 
         component={'main'} 
