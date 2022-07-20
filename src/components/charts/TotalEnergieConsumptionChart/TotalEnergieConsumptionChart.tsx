@@ -59,13 +59,17 @@ const EnergieConsumptionChart = ({ devices, subscription }: EnergieConsumptionCh
   )
   // console.log("Total energie data >>", energieData);
   
+  const parseTimeField = (t: string) => {
+    const newStr = t.replace('\'', "");
+    return newStr.split(' ').join('T');
+  }
 
   const getDatasets = (data?: any[]) => {
     if (!data) return [];
 
     return data.map((chunk, idx) => ({
       label: devices[idx] ? devices[idx].name : "Unknown",
-      data: chunk.map((d: any) =>({ x: d._id, y: d.consumed})),
+      data: chunk.map((d: any) => ({ x:  chartTime == '1d' ? parseTimeField(d._id) : d._id, y: d.consumed})),
       backgroundColor: colorArray[idx],
     }))
   }
@@ -74,15 +78,15 @@ const EnergieConsumptionChart = ({ devices, subscription }: EnergieConsumptionCh
   return (
     <Box style={{ height: 400,  position: 'relative' }}>
       <Stack direction={"row"} justifyContent={"space-between"}>
-        <Typography variant="h6">Total Energie Consumption Chart</Typography> 
+        <Typography variant="h6">Total Power Consumption (kwh/h)</Typography> 
         <Stack direction="row" spacing={2} alignItems={"center"}> 
           {isLoading && <CircularProgress size={25} />}
           <ChartOptionsMenu       
             value={chartTime}
             items={[
-              { label: '1 Day', value: '1d' },
-              { label: '1 Month', value: '1m' },
-              { label: '1 Year', value: '1y' },
+              { label: 'Last 24h', value: '1d' },
+              { label: 'Last 30 days', value: '1m' },
+              { label: 'Last 12 months', value: '1y' },
             ]}
             onChange={(value) => {
               setChartTime(value);

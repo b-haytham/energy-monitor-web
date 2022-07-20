@@ -44,14 +44,25 @@ const EnergieConsumptionChart = ({ subscription, device }: EnergieConsumptionCha
     [`energie-data-${device}`, chartTime], 
     ({ queryKey }) => api.data.energie({ s: subscription, d: device, t: queryKey[1] as any })
   )
-    
-  console.log('energieData', energieData);
+
+  const parseTimeField = (t: string) => {
+    const newStr = t.replace('\'', "");
+    return newStr.split(' ').join('T');
+
+  }
 
   const getDataset = (data?: any[]) => {
     if(!data) return [];
 
     if(data.length == 0) return [];
+    
+    if (chartTime == '1d') {
+      
+      if(data.length == 1) return data.map(d =>({ x: parseTimeField(d._id), y: d.consumed }));
 
+      return data.map(d => ({ x: parseTimeField(d._id), y: d.consumed }));
+    }
+  
     if(data.length == 1) return data.map(d =>({ x: d._id, y: d.consumed }));
 
     return data.map(d => ({ x: d._id, y: d.consumed }));
@@ -60,15 +71,15 @@ const EnergieConsumptionChart = ({ subscription, device }: EnergieConsumptionCha
   return (
     <Box style={{ height: 400,  position: 'relative' }}>
       <Stack direction={"row"} justifyContent={"space-between"}>
-        <Typography variant="h6">Energie Consumption Chart</Typography> 
+        <Typography variant="h6">Power Consumption (kw/h)</Typography> 
         <Stack direction="row" spacing={2} alignItems={"center"}> 
           {isLoading && <CircularProgress size={25} />}
           <ChartOptionsMenu       
             value={chartTime}
             items={[
-              { label: '1 Day', value: '1d' },
-              { label: '1 Month', value: '1m' },
-              { label: '1 Year', value: '1y' },
+              { label: 'Last 24h', value: '1d' },
+              { label: 'Last 30 days', value: '1m' },
+              { label: 'Last 12 months', value: '1y' },
             ]}
             onChange={(value) => {
               setChartTime(value);

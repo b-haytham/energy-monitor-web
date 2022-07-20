@@ -110,7 +110,6 @@ const AppNotificationsMenu = () => {
     }
   }
 
-  console.log('App Notifications >>', notifications);
   return (
     <>
       <IconButton size='small' aria-label={'App Notifications'} onClick={handleClick}>

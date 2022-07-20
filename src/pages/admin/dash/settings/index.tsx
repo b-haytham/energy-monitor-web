@@ -36,7 +36,7 @@ const Settings: NextPage<SettingsProps> = ({}) => {
   } = useForm({ 
     defaultValues: { 
       first_name: loggedInUser ? loggedInUser.first_name : "", 
-      last_name: loggedInUser ? loggedInUser.first_name : "" 
+      last_name: loggedInUser ? loggedInUser.last_name : "" 
     } 
   })
 
