@@ -3,7 +3,12 @@ import { v4 as uuidv4 } from 'uuid';
 
 export enum AppNotificationType {
   TriggeredAlert = "Triggered Alert",
-  ReportGenerated = "Report Generated"
+  ReportGenerated = "Report Generated",
+  DeviceConnectAttempt = "Device Connection Attempt",
+  DeviceConnectionLost = "Device Connection Lost",
+  DeviceDisconnected = "Device Disconnected",
+  DeviceAuthenticated = "Device Authenticated",
+  DeviceAuthenticationFailed = "Device Failed to Authenticate"
 }
 
 export type AppNotification = {
