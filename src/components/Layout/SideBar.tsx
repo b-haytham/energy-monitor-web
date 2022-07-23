@@ -20,6 +20,7 @@ import SideBarListItem from "./SideBarListItem";
 
 import { useAppDispatch, useAppSelector } from "@redux/store";
 import { logout } from "@redux/auth/actions";
+import socket from "src/socket";
 
 interface SideBarProps {
   open: boolean;
@@ -29,6 +30,7 @@ const SideBar = ({ open }: SideBarProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const userRole = useAppSelector((state) => state.auth.user?.role);
+  const accessToken = useAppSelector((state) => state.auth.access_token);
 
   return (
     <Drawer
@@ -147,17 +149,19 @@ const SideBar = ({ open }: SideBarProps) => {
             text="Logout"
             icon={<LogoutOutlinedIcon />}
             onClick={() => {
-              if (userRole) {
+              if (userRole && accessToken) {
                 if (userRole.includes("admin")) {
                   dispatch(logout({}))
                     .unwrap()
                     .then(() => {
+                      socket.emit('logout', { access_token: accessToken })
                       router.push("/admin/auth/login");
                     });
                 } else {
                   dispatch(logout({}))
                     .unwrap()
                     .then(() => {
+                      socket.emit('logout', { access_token: accessToken })
                       router.push("/auth/login");
                     });
                 }
