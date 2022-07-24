@@ -1,13 +1,17 @@
-import Layout from "@components/Layout";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { NextComponentType, NextPageContext } from "next";
+import { useSnackbar } from "notistack";
+
+import Layout from "@components/layouts/DashboardLayout";
+import MainLayout from "@components/layouts/MainLayout";
+
+import { useAppDispatch } from "@redux/store";
 import { addTriggeredAlert } from "@redux/alerts/alertsSlice";
 import { deviceHandleNotification } from "@redux/devices/devicesSlice";
 import { addAppNotification, AppNotificationType } from "@redux/global/globalSlice";
 import { createReport } from "@redux/reports/reportsSlice";
-import { useAppDispatch } from "@redux/store";
-import { NextComponentType, NextPageContext } from "next";
-import { useRouter } from "next/router";
-import { useSnackbar } from "notistack";
-import { useEffect } from "react";
+
 import socket from "src/socket";
 
 interface NextComponentProps {
@@ -112,8 +116,11 @@ const NextComponent = ({ Component, pageProps }: NextComponentProps) =>  {
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      ): (
-        <Component {...pageProps} />
+      ): router.pathname.includes('auth') ? (<Component {...pageProps} />) 
+      :(
+        <MainLayout>
+          <Component {...pageProps} />
+        </MainLayout>
       )}
     </>
   )
