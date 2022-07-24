@@ -1,7 +1,10 @@
 import { Alert } from "@api/types/alert";
 import { Device } from "@api/types/device";
 import { TriggeredAlert } from "@api/types/triggered-alert"
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid"
+import Link from "@components/Link";
+import { Tooltip, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid"
+import { useAppSelector } from "@redux/store";
 
 import dayjs from 'dayjs';
 
@@ -34,6 +37,7 @@ const TriggeredAlertsTable = ({
   onEdit,
   onDelete,
 }: TriggeredAlertsTableProps) => {
+  const loggedInUser = useAppSelector(state => state.auth.user);
   const columns: GridColDef[] = [
     { 
       field: 'device', 
@@ -42,7 +46,32 @@ const TriggeredAlertsTable = ({
       minWidth: 130,
       valueGetter: (params: GridValueGetterParams) => {
         return (alert.device as Device).name;
-      }
+      },
+      renderCell: ({ row }: GridRenderCellParams) => {
+        return (
+          <Tooltip
+            title={
+              <>
+                <Typography>{(alert.device as Device).name}</Typography>
+                <Typography variant="caption">{(alert.device as Device).description}</Typography>
+              </>
+            }
+          >
+            <Link
+              href={
+                loggedInUser?.role.includes('admin') ?
+                `/admin/dash/devices/${(alert.device as Device)._id}` :
+                `/dash/devices/${(alert.device as Device)._id}`
+              }
+              sx={{ 
+                color: (theme) => theme.palette.text.primary,
+              }} 
+            >
+              {(alert.device as Device).name}
+            </Link>
+          </Tooltip>
+        )
+      },
     },
     { 
       field: 'value_name', 

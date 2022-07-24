@@ -1,9 +1,11 @@
-import { Chip } from "@mui/material";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { Chip, Tooltip, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid";
 
 import TableOptionsMenu from "../TableOptionsMenu/TableOptionsMenu";
+import Link from "@components/Link";
 
 import { Subscription } from "@api/types/subscription";
+import { useAppSelector } from "@redux/store";
 
 interface SubscriptionsTableProps {
   subscriptions: Subscription[]
@@ -13,6 +15,8 @@ interface SubscriptionsTableProps {
 }
 
 const SubscriptionsTable = ({ subscriptions, onView, onEdit, onDelete }: SubscriptionsTableProps) => {
+  const loggedInUser = useAppSelector(state => state.auth.user); 
+
   const columns: GridColDef[] = [
     { 
       field: 'name', 
@@ -41,6 +45,34 @@ const SubscriptionsTable = ({ subscriptions, onView, onEdit, onDelete }: Subscri
         return params.row.company_info.phone;
       }
     },
+    ...(loggedInUser && loggedInUser.role.includes('admin') ? [{ 
+        field: "administrator",  
+        headerName: "Administrator",
+        flex: 1,
+        minWidth: 150,
+        valueGetter: (params: GridValueGetterParams) => `${params.row.admin.first_name} + ${params.row.admin.last_name}`,
+        renderCell: ({ row }: GridRenderCellParams) => {
+          return (
+            <Tooltip
+              title={
+                <>
+                  <Typography>{`${row.admin.first_name} + ${row.admin.last_name}`}</Typography>
+                  <Typography>{row.admin.email}</Typography>
+                </>
+              }
+            >
+              <Link 
+                href={`/admin/dash/users`}
+                sx={{ 
+                  color: (theme) => theme.palette.text.primary,
+                }} 
+              >
+                {`${row.admin.first_name} + ${row.admin.last_name}`}
+              </Link>
+            </Tooltip>
+          )
+        },
+      }] : []),
     {
       field: 'address',
       headerName: 'Address',

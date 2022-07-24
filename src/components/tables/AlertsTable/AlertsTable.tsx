@@ -1,10 +1,12 @@
 
-import { Chip } from "@mui/material";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { Tooltip, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid";
 
 import TableOptionsMenu from "../TableOptionsMenu/TableOptionsMenu";
+import Link from "@components/Link";
 
 import { Alert } from "@api/types/alert";
+import { useAppSelector } from "@redux/store";
 
 const value_map = {
   s: 'Status',
@@ -33,7 +35,7 @@ const AlertsTable = ({
   onEdit, 
   onView 
 }: AlertsTableProps) => {
-  
+  const loggedInUser = useAppSelector(state => state.auth.user);
   const columns: GridColDef[] = [
     { 
       field: 'device', 
@@ -42,7 +44,31 @@ const AlertsTable = ({
       minWidth: 130,
       valueGetter: (params: GridValueGetterParams) => {
         return params.row.device.name;
-      }
+      },
+      renderCell: ({ row }: GridRenderCellParams) => {
+        return (
+          <Tooltip
+            title={
+              <>
+                <Typography>{row.device.name}</Typography>
+              </>
+            }
+          >
+            <Link
+              href={
+                loggedInUser?.role.includes('admin') ?
+                `/admin/dash/devices/${row.device._id}` :
+                `/dash/devices/${row.device._id}`
+              }
+              sx={{ 
+                color: (theme) => theme.palette.text.primary,
+              }} 
+            >
+              {row.device.name}
+            </Link>
+          </Tooltip>
+        )
+      },
     },
     { 
       field: 'value_name', 
