@@ -4,7 +4,7 @@ import { VisibilityOffOutlined, VisibilityOutlined } from '@mui/icons-material';
 import { Box, Button, Grid, IconButton, InputAdornment, Stack, TextField, Typography } from '@mui/material'
 import { login } from '@redux/auth/actions';
 import { fetchAll } from '@redux/global/actions';
-import { useAppDispatch } from '@redux/store';
+import { useAppDispatch, useAppSelector } from '@redux/store';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useForm } from 'react-hook-form';
@@ -15,6 +15,9 @@ interface LoginProps {}
 const Login = ({}: LoginProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const globalLoading = useAppSelector(state => state.global.loading);
+  const loading = useAppSelector(state => state.auth.loading);
+
   const { enqueueSnackbar } = useSnackbar();
   const [passwordVisible, passwordVisibitiy] = useDisclosure(false);
 
@@ -92,6 +95,7 @@ const Login = ({}: LoginProps) => {
                 type='submit' 
                 size="large"
                 fullWidth
+                disabled={globalLoading || loading}
               >
                 Submit
               </Button>

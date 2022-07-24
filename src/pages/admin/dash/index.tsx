@@ -1,6 +1,6 @@
 import CountCard from "@components/cards/CountCard";
 import { AddOutlined } from "@mui/icons-material";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useAppSelector } from "@redux/store";
 
 const Dashboard = ({}) => {
@@ -8,7 +8,7 @@ const Dashboard = ({}) => {
   const devices = useAppSelector(state => state.devices.devices);
   const users = useAppSelector(state => state.users.users);
   return (
-    <Box>
+    <Box sx={{  height: 1, display: 'flex', flexDirection: 'column' }}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={4}>
           <CountCard 
@@ -30,6 +30,19 @@ const Dashboard = ({}) => {
           />
         </Grid>
       </Grid>
+      <Paper 
+        sx={{ 
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 2,
+          my: 2,
+          p: 2,
+          height: 1
+        }}
+      >
+        <Typography variant="subtitle1">Not Implemented Yet</Typography>
+      </Paper>
     </Box>
   )
 }

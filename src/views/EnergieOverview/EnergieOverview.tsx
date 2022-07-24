@@ -1,12 +1,19 @@
 import api from "@api";
 import { Subscription } from "@api/types/subscription";
-import { Box, Grid, GridProps, Paper, Typography } from "@mui/material";
+import { Box, Grid, GridProps, Paper, Skeleton, Typography } from "@mui/material";
 import { useAppSelector } from "@redux/store";
 import { useQuery } from "react-query";
 
 interface EnergieOverviewProps extends GridProps {
   subscription?: string
 }
+
+const OverviewLoadingSkeleton = () => (
+  <Paper variant="outlined" sx={{ minHeight: 100, borderRadius: 3, p: 2 }}>
+    <Skeleton variant="text" width={200} />
+    <Skeleton variant="text" width={50} />
+  </Paper>
+)
 
 const EnergieOverview = ({ subscription, ...rest} : EnergieOverviewProps) => {
   const foundSubscription = useAppSelector(state => {
@@ -64,19 +71,21 @@ const EnergieOverview = ({ subscription, ...rest} : EnergieOverviewProps) => {
         </Paper>
       </Grid>
       <Grid item xs={12} md={4}>
-        <Paper variant="outlined" sx={{ minHeight: 100, borderRadius: 3, p: 2 }}>
+        {powerConsumptionLastDayLoading && <OverviewLoadingSkeleton />}
+        {!powerConsumptionLastDayLoading && <Paper variant="outlined" sx={{ minHeight: 100, borderRadius: 3, p: 2 }}>
           <Typography variant="h6" color={"grey.900"}>
             Power Consumption (today)
           </Typography>
           <Box >
             <Typography variant="h4">
-              {powerConsumptionLastDay?.toFixed(2)} KWh
+              {powerConsumptionLastDay?.toFixed(2)} Kw/h
             </Typography>
           </Box>
-        </Paper>
+        </Paper>}
       </Grid>
       <Grid item xs={12} md={4}>
-        <Paper variant="outlined" sx={{ minHeight: 100, borderRadius: 3, p: 2 }}>
+        {powerConsumptionLastMonthLoading && <OverviewLoadingSkeleton />}
+        {!powerConsumptionLastMonthLoading && <Paper variant="outlined" sx={{ minHeight: 100, borderRadius: 3, p: 2 }}>
           <Typography variant="h6" >
             Power Consumption (this month)
           </Typography>
@@ -86,7 +95,7 @@ const EnergieOverview = ({ subscription, ...rest} : EnergieOverviewProps) => {
             </Typography>
           </Box>
 
-        </Paper>
+        </Paper>}
       </Grid>
     </Grid>
   )
