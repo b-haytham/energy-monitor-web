@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
+import { motion } from 'framer-motion';
 
 import Link from '@components/Link';
 import { 
@@ -50,6 +51,17 @@ const ForgotPassword = ({}: ForgotPasswordProps) => {
           // boxShadow: 10,
         }}
       >
+        <Box sx={{ mb: 3 }}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <motion.img 
+              src='/logo.svg' 
+              alt="logo" 
+              height={50} 
+              whileHover={{ rotate: 360 }} 
+            /> 
+            <Typography variant="subtitle2" fontSize={18} fontWeight={'bold'}>Power Monitor</Typography>
+          </Stack>
+        </Box>
         <Typography variant="h4" component="h1" >Forgot Password ?</Typography>
         <Typography variant="subtitle2" component="p">{"Please provide your email, we'll send reset link"}</Typography>
 

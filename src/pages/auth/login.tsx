@@ -51,7 +51,7 @@ const Login = ({}: LoginProps) => {
     <Grid container sx={{ minHeight: '100vh' }}>
       <Grid item xs={12} sm={12} md={6}  sx={{ p: { xs: 3, sm: 10 ,md: 10 } }}  alignSelf={'center'}>
         <Box sx={{ my: 'auto' }}>
-          <Typography variant="h3" component="h1">Login To Engy</Typography>
+          <Typography variant="h3" component="h1">Login To Power Monitor</Typography>
           <Typography variant="subtitle2" component="p">Please provide your credentials</Typography>
 
           <Box sx={{ mt: 4 }}>
@@ -112,6 +112,18 @@ const Login = ({}: LoginProps) => {
           bgcolor: (theme) => theme.palette.grey[50]
         }}
       >
+        <Box 
+          sx={{ 
+            display: { xs: 'none', sm: 'none', md: 'flex' }, 
+            height: 1, 
+            // display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center' 
+          }}
+        >
+          {/*<Image src='/logo.svg' alt="logo" width={500} height={500} /> */}
+          <img src='/logo.svg' alt="logo" width="61%" /> 
+        </Box>
       </Grid>
     </Grid>
   )

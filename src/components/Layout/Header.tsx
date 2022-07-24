@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion';
+
 import { AppBar, IconButton, Stack, Toolbar, Typography,  useMediaQuery,  useTheme } from "@mui/material";
 import { MenuOutlined, ArrowBackOutlined } from "@mui/icons-material";
 
@@ -29,9 +31,18 @@ const Header = ({ open, handleOpen, handleClose }: HeaderProps) => {
               {open ? <ArrowBackOutlined /> : <MenuOutlined />}
             </IconButton>
           )}
-          <Typography variant="h6" color="inherit">
+          <Stack direction="row" spacing={1} alignItems="center">
+            <motion.img 
+              src='/logo.svg' 
+              alt="logo" 
+              height={40} 
+              whileHover={{ rotate: 360 }} 
+            /> 
+            <Typography variant="subtitle2" fontSize={18} fontWeight={'bold'}>Power Monitor</Typography>
+          </Stack>
+          {/*<Typography variant="h6" color="inherit">
             Engy
-          </Typography>
+          </Typography> */ }
         </Stack>
         <Stack direction="row" spacing={2}>
           <AppNotificationsMenu />
