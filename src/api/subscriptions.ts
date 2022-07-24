@@ -22,11 +22,14 @@ export interface CreateRequest {
       country: string;
       zip: number;
     };
+    file?: any;
+    energie_cost?: number;
+    currency?: number
   };
 }
 
 export type UpdateRequest = Partial<CreateRequest>;
-export type UpdateConpanyInfoRequest = Partial<CreateRequest["company_info"]>;
+export type UpdateCompanyInfoRequest = Partial<CreateRequest["company_info"]>;
 
 export type QuerySubscriptionParams = {
   p?: string;
@@ -62,6 +65,20 @@ export namespace subscriptions {
       throw new ApiError(error);
     }
   };
+
+  export const updateInfo = async (id: string, params: UpdateCompanyInfoRequest) => {
+    try {
+      const { data } = await axios.patch(
+        `${base_url}/subscriptions/${id}/info`,
+        params
+      );
+
+      return data as Subscription;
+    } catch (error) {
+      throw new ApiError(error);
+    }
+  };
+
   export const get = async (id: string, query?: QuerySubscriptionOptions) => {
     try {
       const { data } = await axios.get(`${base_url}/subscriptions/${id}`, {

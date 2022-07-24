@@ -1,3 +1,4 @@
+import { Subscription } from "@api/types/subscription";
 import { User } from "@api/types/user";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { changePassword, login, logout, updateUserInfo } from "./actions";
@@ -29,6 +30,12 @@ const authSlice = createSlice({
         state.user.last_name = action.payload.last_name;
       }
     },
+    updateLoggedInUserSubscriptionCompanyInfo(state, action: PayloadAction<Subscription["company_info"]>) {
+      if(state.user) {
+        (state.user.subscription as Subscription).company_info = action.payload;
+      }
+    },
+
     authClearErrors: (state) => {
       state.errors = [];
     },
@@ -86,7 +93,8 @@ const authSlice = createSlice({
 export const { 
   authClearErrors, 
   authClearState, 
-  updateLoggedInUser 
+  updateLoggedInUser,
+  updateLoggedInUserSubscriptionCompanyInfo,
 } = authSlice.actions;
 
 export default authSlice.reducer;

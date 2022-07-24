@@ -1,12 +1,13 @@
 import { Subscription } from "@api/types/subscription";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { CreateRequest, UpdateRequest } from "@api/subscriptions";
+import { CreateRequest, UpdateCompanyInfoRequest, UpdateRequest } from "@api/subscriptions";
 import { deleteUsers, setUserSubscription } from "@redux/users/usersSlice";
 
 import api from "@api";
 import { Device } from "@api/types/device";
 import { User } from "@api/types/user";
 import { deleteDevices } from "@redux/devices/devicesSlice";
+import { updateLoggedInUserSubscriptionCompanyInfo } from "@redux/auth/authSlice";
 
 export const createSubscription = createAsyncThunk<
   Subscription,
@@ -35,6 +36,23 @@ export const updateSubscription = createAsyncThunk<
     const data = await api.subscriptions.update(params._id, params);
     return data as Subscription;
   } catch (error: any) {
+    const messages: string[] = error.errors;
+    return thunkApi.rejectWithValue(messages);
+  }
+});
+
+export const updateSubscriptionInfo = createAsyncThunk<
+  Subscription,
+  UpdateCompanyInfoRequest & { _id: string },
+  { rejectValue: string[] }
+>("subscriptions/updateInfo", async (params, thunkApi) => {
+  try {
+    const data: Subscription = await api.subscriptions.updateInfo(params._id, params);
+    
+    thunkApi.dispatch(updateLoggedInUserSubscriptionCompanyInfo(data.company_info))
+    return data;
+  } catch (error: any) {
+    console.error(error);
     const messages: string[] = error.errors;
     return thunkApi.rejectWithValue(messages);
   }

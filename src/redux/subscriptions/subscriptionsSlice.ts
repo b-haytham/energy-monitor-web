@@ -6,6 +6,7 @@ import {
   deleteSubscription,
   getSubscriptions,
   updateSubscription,
+  updateSubscriptionInfo,
 } from "./actions";
 
 // Define a type for the slice state
@@ -101,6 +102,22 @@ const subscriptionsSlice = createSlice({
       );
     });
     builder.addCase(updateSubscription.rejected, (state, action) => {
+      state.loading = false;
+      const errors = action.payload || [];
+      state.errors = [...state.errors, ...errors];
+    });
+
+    builder.addCase(updateSubscriptionInfo.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateSubscriptionInfo.fulfilled, (state, action) => {
+      state.loading = false;
+      const subscription = state.subscriptions.find(sub => sub._id == action.payload._id);
+      if (subscription) {
+        subscription.company_info = action.payload.company_info;
+      }
+    });
+    builder.addCase(updateSubscriptionInfo.rejected, (state, action) => {
       state.loading = false;
       const errors = action.payload || [];
       state.errors = [...state.errors, ...errors];

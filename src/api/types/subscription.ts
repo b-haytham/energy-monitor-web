@@ -21,6 +21,15 @@ export type CompanyInfo = {
   phone: string;
 
   address: Address;
+
+  logo: {
+    filename: string | null;
+    path: string | null;
+  };
+
+  energie_cost: number | null;
+
+  currency: string | null;
 };
 
 export type Subscription = {

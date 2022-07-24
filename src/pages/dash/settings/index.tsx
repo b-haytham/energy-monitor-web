@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -17,12 +18,15 @@ import {
 import { ExpandMoreOutlined } from '@mui/icons-material';
 
 import PageHeader from '@components/PageHeader';
+import PasswordInput from '@components/forms/PasswordInput';
 
 import { updateUserInfo } from '@redux/auth/actions';
 import { useAppDispatch, useAppSelector } from '@redux/store';
 
 import api from '@api';
-import PasswordInput from '@components/forms/PasswordInput';
+import { Role } from '@api/types/user';
+import { Subscription } from '@api/types/subscription';
+import { updateSubscriptionInfo } from '@redux/subscriptions/actions';
 
 interface SettingsProps {
 
@@ -32,7 +36,13 @@ const Settings: NextPage<SettingsProps> = ({ }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
+
   const loggedInUser = useAppSelector(state => state.auth.user)
+  const userSubscription = loggedInUser?.subscription as Subscription;
+
+  const [personalInfoExpanded, setPersonalInfoExpanded] = useState(true);
+  const [subscripitonUpdateExpanded, setSubscripionUpdateExpanded] = useState(false);
+  const [credentialsExpanded, setCredentialsExpanded] = useState(false);
 
   const {
     register: personalInfoRegister,
@@ -63,7 +73,20 @@ const Settings: NextPage<SettingsProps> = ({ }) => {
   //   defaultValues: { 
   //   } 
   // })
-
+  
+  const {
+    register: subscriptionUpdateRegister,
+    handleSubmit: subscriptionUpdateHandleSubmit,
+  } = useForm({
+    defaultValues: {
+      name: userSubscription?.company_info.name ?? "",
+      phone: userSubscription?.company_info.phone ?? "",
+      email: userSubscription?.company_info.email ?? "",
+      energie_cost: userSubscription?.company_info.energie_cost ?? 0,
+      currency: userSubscription?.company_info.currency ?? ""
+    }
+  })
+  
   const onCredentialsFormSubmit = async (data: any) => {
     if (data.new !== data.confirm) {
       enqueueSnackbar("Passwords don't match!", { variant: 'error' })
@@ -92,7 +115,24 @@ const Settings: NextPage<SettingsProps> = ({ }) => {
     try {
       const u = await dispatch(updateUserInfo({ _id: loggedInUser._id, ...data })).unwrap();
       console.log(u);
-      enqueueSnackbar('Successfully updated', { variant: 'success' })
+      enqueueSnackbar('Personal Information Successfully Updated', { variant: 'success' })
+    } catch (error) {
+      enqueueSnackbar((error as any).message, { variant: 'error' })
+    }
+  }
+
+  const onSubscriptionUpdateFormSubmit = async (data: any) => {
+    console.log(data);
+  
+    if (!loggedInUser) {
+      enqueueSnackbar("Not supposed to happen", { variant: 'error' });
+      return;
+    }
+
+    try {
+      const u = await dispatch(updateSubscriptionInfo({ _id: userSubscription?._id ?? "", ...data })).unwrap();
+      console.log(u);
+      enqueueSnackbar('Subscription Information Successfully Updated', { variant: 'success' })
     } catch (error) {
       enqueueSnackbar((error as any).message, { variant: 'error' })
     }
@@ -105,7 +145,12 @@ const Settings: NextPage<SettingsProps> = ({ }) => {
         onBack={() => router.back()}
       />
       <Box sx={{ mt: 2 }}>
-        <Accordion variant="outlined" sx={{ borderRadius: 2, mb: 2 }} expanded>
+        <Accordion 
+          variant="outlined" 
+          sx={{ borderRadius: 2, mb: 2 }} 
+          expanded={personalInfoExpanded}
+          onChange={(_, expanded) => setPersonalInfoExpanded(expanded)}
+        >
           <AccordionSummary
             expandIcon={<ExpandMoreOutlined />}
             aria-controls="panel1a-content"
@@ -127,7 +172,62 @@ const Settings: NextPage<SettingsProps> = ({ }) => {
             </form>
           </AccordionDetails>
         </Accordion>
-        <Accordion variant="outlined" sx={{ borderRadius: 2, mb: 2 }} expanded>
+
+        {loggedInUser && loggedInUser.role == Role.SUPER_USER && <Accordion 
+          variant="outlined" 
+          sx={{ borderRadius: 2, mb: 2 }} 
+          expanded={subscripitonUpdateExpanded}
+          onChange={(_, expanded) => setSubscripionUpdateExpanded(expanded)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreOutlined />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography variant="h6">Subscription Information</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <form onSubmit={subscriptionUpdateHandleSubmit(onSubscriptionUpdateFormSubmit)}>
+              <Stack direction={'row'} spacing={2}>
+                <TextField id="company_name" fullWidth label="Company Name" {...subscriptionUpdateRegister('name')} />
+                <TextField id="company_phone" fullWidth label="Company Phone" {...subscriptionUpdateRegister('phone')} />
+              </Stack>
+              <TextField 
+                id="company_email" 
+                fullWidth label="Company Email" 
+                sx={{ mt: 2 }}
+                {...subscriptionUpdateRegister('email')} 
+              />
+              <Stack direction={'row'} spacing={2} sx={{ mt: 2 }}>
+                <TextField 
+                  id="energie_cost" 
+                  fullWidth  
+                  label="Energie Cost" 
+                  placeholder="(kw/h) unit cost"
+                  {...subscriptionUpdateRegister('energie_cost')} 
+                />
+                <TextField 
+                  id="currency" 
+                  fullWidth label="Currency" 
+                  placeholder="e.g (DT)"
+                  {...subscriptionUpdateRegister('currency')} 
+                />
+              </Stack>
+              <Stack direction="row" justifyContent="end" sx={{ mt: 2 }}>
+                <Button type="submit">
+                  Submit
+                </Button>
+              </Stack>
+            </form>
+          </AccordionDetails>
+        </Accordion>}
+
+        <Accordion 
+          variant="outlined" 
+          sx={{ borderRadius: 2, mb: 2 }} 
+          expanded={credentialsExpanded}
+          onChange={(_, expanded) => setCredentialsExpanded(expanded)}
+        >
           <AccordionSummary
             expandIcon={<ExpandMoreOutlined />}
             aria-controls="panel2a-content"
