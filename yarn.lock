@@ -771,6 +771,11 @@ big-integer@^1.6.16:
   resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.51.tgz#0df92a5d9880560d3ff2d5fd20245c889d130686"
   integrity sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==
 
+blobshape@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/blobshape/-/blobshape-1.0.0.tgz#8c96184439ac21b181ff4d8e0609681f181ecd12"
+  integrity sha512-GUD6tUIvj7k8zLSMtfdM1RyusWDjFqYL9g6J6QIgwxbVjL3b6mbRz5peerDc+6kbZX/14BSr3ed9sizrJKdkQQ==
+
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
@@ -2353,6 +2358,13 @@ react-redux@^8.0.2:
     hoist-non-react-statics "^3.3.2"
     react-is "^18.0.0"
     use-sync-external-store "^1.0.0"
+
+react-svg-blob@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/react-svg-blob/-/react-svg-blob-0.3.1.tgz#d948d67f0f7ff1167db37c602178e535db291c6c"
+  integrity sha512-hJCdgcao8NDuOkGgKgSvbjMx15O7rndwSMGu2akWlrWzOqEL6M0cPwqCGO8brD2rnqMYwu1Zky6ZCLv+4g5/Eg==
+  dependencies:
+    blobshape "^1.0.0"
 
 react-transition-group@^4.4.2:
   version "4.4.2"

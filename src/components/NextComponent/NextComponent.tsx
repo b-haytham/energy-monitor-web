@@ -112,16 +112,13 @@ const NextComponent = ({ Component, pageProps }: NextComponentProps) =>  {
 
   return (
     <>
-      {router.pathname.includes('dash') ? (
+      {router.pathname.includes('dash') 
+      ? (
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      ): router.pathname.includes('auth') ? (<Component {...pageProps} />) 
-      :(
-        <MainLayout>
-          <Component {...pageProps} />
-        </MainLayout>
-      )}
+      ) : 
+      ( <Component {...pageProps} />)} 
     </>
   )
 }

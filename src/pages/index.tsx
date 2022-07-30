@@ -1,11 +1,39 @@
 import type { NextPage } from 'next';
-import { Typography, Box, AppBar, Toolbar } from '@mui/material';
+
+import { Box } from '@mui/material';
+
+import { Header, Footer } from '@components/layouts/MainLayout';
+
+import ImagesSection from '@views/Home/ImagesSection';
+import FeaturesSection from '@views/Home/FeaturesSection';
+import UseCasesSection from '@views/Home/UserCasesSection';
+import Hero from '@views/Home/Hero';
 
 const Home: NextPage = () => {
   return (
-    <Box>
-      <Typography variant="h4">Hello Next.js</Typography>
-    </Box>
+    <>
+      <Header />
+      <Box sx={{ flexGrow: 1 }}>
+
+        {/* --------------------*/}
+        <Hero />
+        {/* --------------------*/}
+
+        {/* --------------------*/}
+        <ImagesSection />
+        {/* --------------------*/}
+
+        {/* --------------------*/}
+        <FeaturesSection />
+        {/* --------------------*/}
+
+        {/* --------------------*/}
+        <UseCasesSection />
+        {/* --------------------*/}
+
+      </Box>
+      <Footer />
+    </>
   );
 };
 

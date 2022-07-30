@@ -1,14 +1,19 @@
-import { Box, Typography } from "@mui/material"
+import Logo from "@components/Logo"
+import { Box, Divider } from "@mui/material"
 
 interface FooterProps {}
 
-export const Footer = ({}: FooterProps) => {
+const Footer = ({}: FooterProps) => {
   return (
     <Box 
-      sx={{ p: 6 }}
+      sx={{ pt: 10, px: { xs: 2, sm: 2, md:  10 } }}
     >
-      <Typography variant="h5"> Footer </Typography>
+      <Divider />
+      <Box sx={{ py: 5 }}>
+        <Logo width={100} height={100} />
+      </Box>
     </Box>
   )
 }
 
+export default Footer;
