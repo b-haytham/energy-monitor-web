@@ -1,7 +1,11 @@
 import { useMemo } from "react";
+import { NextConfig } from "next";
+import getConfig from "next/config";
+
 import dayjs from 'dayjs';
 
-import { Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import { PictureAsPdfOutlined } from "@mui/icons-material";
 import { 
   DataGrid, 
   GridColDef, 
@@ -15,6 +19,9 @@ import TableLink from "../TableLink";
 import { useAppSelector } from "@redux/store";
 
 import { Report } from "@api/types/reports";
+
+const { publicRuntimeConfig }: NextConfig = getConfig();
+const base_url = publicRuntimeConfig!.BASE_URL + '/api';
 
 interface ReportsTableProps {
   reports: Report[]
@@ -81,12 +88,24 @@ const ReportsTable = ({
       }
     },
     {
-      field: 'pdf_path',
+      field: 'file',
       headerName: 'File',
       flex: 1,
       minWidth: 150,
       valueGetter: (params: GridValueGetterParams) => {
-        // return +params.row.cost.toFixed(2);
+        // return 
+      },
+      renderCell: ({ row }) => {
+        return (
+          <Stack direction='row' spacing={1}>
+            <TableLink 
+              href={`${base_url}${row.file.url}`}
+              text={row.file.name}
+              target="_blank"
+            />
+            <PictureAsPdfOutlined color="error" />
+          </Stack>
+        );
       }
     },
     {
