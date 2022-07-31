@@ -23,12 +23,13 @@ interface DevicesTableProps {
 }
 
 const DevicesTable = ({ 
-  devices, 
+  // devices, 
   onDelete, 
   onEdit, 
   onView 
 }: DevicesTableProps) => {
   const loggedInUser = useAppSelector(state => state.auth.user);
+  const devices = useAppSelector(state => state.devices.devices)
     
   const columns: GridColDef[] = useMemo(() => {
     return [
@@ -77,9 +78,17 @@ const DevicesTable = ({
         flex: 1,
         minWidth: 150,
         valueGetter: (params: GridValueGetterParams) => {
-          const powerValue = (params.row as Device).values.find(val => val.accessor == 'p');
+          const device = devices.find(dev => dev._id == params.row._id);
+          const powerValue =  device 
+            ? device.values.find(val => val.accessor == 'p') 
+            : (params.row as Device).values.find(val => val.accessor == 'p');
+
           const unit = powerValue ? powerValue.unit : ""
-          return +params.row.power.toFixed(2) + ` ${unit}`;
+          
+          let value = device ? +device.power.toFixed(2) : +params.row.power.toFixed(2)
+
+          const result = value + ` ${unit}`;
+          return result;
         }
       },
       // {
@@ -117,7 +126,7 @@ const DevicesTable = ({
         }
       },
     ]
-  }, [loggedInUser])
+  }, [loggedInUser, devices])
 
 
   return (
