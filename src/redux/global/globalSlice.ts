@@ -43,8 +43,14 @@ const globalSlice = createSlice({
         notification.read = true
       }
     },
+    markReadAllAppNotification(state) {
+      state.notifications = state.notifications.map(it => ({...it, read: true}));
+    },
     deleteAppNotification(state, action: PayloadAction<string>) {
       state.notifications = state.notifications.filter(notif => notif.id !== action.payload);
+    },
+    deleteAllAppNotification(state) {
+      state.notifications = []
     }
   }
 })
@@ -54,6 +60,8 @@ export const {
   addAppNotification,  
   markReadAppNotification,
   deleteAppNotification,
+  markReadAllAppNotification,
+  deleteAllAppNotification
 } = globalSlice.actions;
 
 export default globalSlice.reducer;

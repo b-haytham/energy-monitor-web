@@ -131,7 +131,7 @@ const AppNotificationListItem = ({
       <Stack direction="row" spacing={1} justifyContent='end' sx={{ mt: 0 }}>
         {!notification.read && <IconButton 
           size="small" 
-          color="info"
+          color="primary"
           onClick={onMarkReadClick}
         >
           <MarkChatReadOutlined fontSize="small" />

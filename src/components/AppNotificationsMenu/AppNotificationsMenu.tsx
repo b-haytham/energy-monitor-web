@@ -7,22 +7,25 @@ import {
   Stack, 
   Typography, 
   Box,
+  Tooltip,
 } from "@mui/material";
-import { NotificationsActiveOutlined } from "@mui/icons-material";
+import { NotificationsActiveOutlined, ClearAllOutlined, DraftsOutlined } from "@mui/icons-material";
 
 import AppNotificationListItem from "./AppNotificationListItem";
 import CustomMuiMenu from "@components/CustomMuiMenu";
 
 import { useAppDispatch, useAppSelector } from "@redux/store";
 import { 
+  deleteAllAppNotification,
   deleteAppNotification, 
+  markReadAllAppNotification, 
   markReadAppNotification 
 } from "@redux/global/globalSlice";
 
 
 interface AppNotificationsMenuProps {}
 
-const AppNotificationsMenu = () => {
+const AppNotificationsMenu = ({}: AppNotificationsMenuProps) => {
   const dispatch = useAppDispatch();
   const notifications = useAppSelector(state => state.global.notifications);
   // const devices = useAppSelector(state => state.devices.devices);
@@ -48,11 +51,36 @@ const AppNotificationsMenu = () => {
         anchorEl={anchorEl}
         onClose={handleClose}
         PaperProps={{ 
-          sx: { width: { xs: 300, sm: 400, md: 500 }, maxHeight: 600 } 
+          sx: { 
+            width: { xs: 300, sm: 400, md: 500 }, 
+            maxHeight: 600,
+            // borderRadius: 2
+          } 
         }}
       >
         <Stack direction="row" justifyContent="space-between" sx={{ p: 2 }}>
           <Typography variant="h6">Notifications</Typography>
+          <Stack direction="row" spacing={1}>
+            <Tooltip title="Mark as Read all">
+              <IconButton 
+                size="small" 
+                color="primary"
+                onClick={() => dispatch(markReadAllAppNotification())}
+              >
+                <DraftsOutlined fontSize="small" />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Delete all">
+              <IconButton 
+                size="small" 
+                color="error"
+                onClick={() => dispatch(deleteAllAppNotification())}
+              >
+                <ClearAllOutlined fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         </Stack>
         <Divider />
         {notifications.length == 0 && (
@@ -60,7 +88,7 @@ const AppNotificationsMenu = () => {
             <Typography variant="body1">No Notifications</Typography>
           </Box>
         )}
-        {notifications.length > 0 && notifications.map((notification) => (
+        {notifications.length > 0 && notifications.slice(-20).map((notification) => (
           <AppNotificationListItem 
             key={notification.id} 
             notification={notification} 
