@@ -77,17 +77,19 @@ const DevicesTable = ({
         flex: 1,
         minWidth: 150,
         valueGetter: (params: GridValueGetterParams) => {
-          return +params.row.power.toFixed(2);
+          const powerValue = (params.row as Device).values.find(val => val.accessor == 'p');
+          const unit = powerValue ? powerValue.unit : ""
+          return +params.row.power.toFixed(2) + ` ${unit}`;
         }
       },
-      {
-        field: 'energie',
-        headerName: 'Energy',
-        flex: 2,
-        minWidth: 200,
-        sortable: true,
-        valueGetter: (params: GridValueGetterParams) => +params.row.energie.toFixed(2)
-      },
+      // {
+      //   field: 'energie',
+      //   headerName: 'Energy',
+      //   flex: 2,
+      //   minWidth: 200,
+      //   sortable: true,
+      //   valueGetter: (params: GridValueGetterParams) => +params.row.energie.toFixed(2)
+      // },
 
       {
         field: 'status',
