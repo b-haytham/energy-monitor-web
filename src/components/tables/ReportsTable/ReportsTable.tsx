@@ -1,13 +1,19 @@
 import { useMemo } from "react";
 import dayjs from 'dayjs';
 
-import { Tooltip, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid";
+import { Typography } from "@mui/material";
+import { 
+  DataGrid, 
+  GridColDef, 
+  GridRenderCellParams, 
+  GridValueGetterParams 
+} from "@mui/x-data-grid";
 
 import TableOptionsMenu from "../TableOptionsMenu/TableOptionsMenu";
-import Link from "@components/Link";
+import TableLink from "../TableLink";
 
 import { useAppSelector } from "@redux/store";
+
 import { Report } from "@api/types/reports";
 
 interface ReportsTableProps {
@@ -34,23 +40,16 @@ const ReportsTable = ({
         valueGetter: ({ row }: GridValueGetterParams) => row.subscription.company_info.name,
         renderCell: ({ row }: GridRenderCellParams) => {
           return (
-            <Tooltip
-              title={
+            <TableLink
+              href={`/admin/dash/subscriptions/${row.subscription._id}`}
+              text={row.subscription.company_info.name}
+              tooltip={
                 <>
                   <Typography>{row.subscription.company_info.name}</Typography>
                   <Typography>{row.subscription.company_info.email}</Typography>
                 </>
               }
-            >
-              <Link 
-                href={`/admin/dash/subscriptions/${row.subscription._id}`}
-                sx={{ 
-                  color: (theme) => theme.palette.text.primary,
-                }} 
-              >
-                {row.subscription.company_info.name}
-              </Link>
-            </Tooltip>
+            />
           )
         },
       }] : []),

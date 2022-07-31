@@ -1,10 +1,18 @@
+import { Typography } from "@mui/material";
+import { 
+  DataGrid, 
+  GridColDef, 
+  GridRenderCellParams, 
+  GridValueGetterParams 
+} from "@mui/x-data-grid"
+
+import TableLink from "../TableLink";
+
+import { useAppSelector } from "@redux/store";
+
 import { Alert } from "@api/types/alert";
 import { Device } from "@api/types/device";
 import { TriggeredAlert } from "@api/types/triggered-alert"
-import Link from "@components/Link";
-import { Tooltip, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid"
-import { useAppSelector } from "@redux/store";
 
 import dayjs from 'dayjs';
 
@@ -33,9 +41,6 @@ const value_map = {
 const TriggeredAlertsTable = ({
   triggeredAlerts, 
   alert,
-  onView,
-  onEdit,
-  onDelete,
 }: TriggeredAlertsTableProps) => {
   const loggedInUser = useAppSelector(state => state.auth.user);
   const columns: GridColDef[] = [
@@ -44,32 +49,25 @@ const TriggeredAlertsTable = ({
       headerName: 'Device', 
       flex: 1,
       minWidth: 130,
-      valueGetter: (params: GridValueGetterParams) => {
+      valueGetter: (_: GridValueGetterParams) => {
         return (alert.device as Device).name;
       },
-      renderCell: ({ row }: GridRenderCellParams) => {
+      renderCell: ({}: GridRenderCellParams) => {
         return (
-          <Tooltip
-            title={
+          <TableLink
+            href={
+              loggedInUser?.role.includes('admin') ?
+              `/admin/dash/devices/${(alert.device as Device)._id}` :
+              `/dash/devices/${(alert.device as Device)._id}`
+            }
+            text={(alert.device as Device).name}
+            tooltip={
               <>
-                <Typography>{(alert.device as Device).name}</Typography>
-                <Typography variant="caption">{(alert.device as Device).description}</Typography>
+                <Typography fontWeight={'bolder'}>{(alert.device as Device).name}</Typography>
+                <Typography>{(alert.device as Device).description}</Typography>
               </>
             }
-          >
-            <Link
-              href={
-                loggedInUser?.role.includes('admin') ?
-                `/admin/dash/devices/${(alert.device as Device)._id}` :
-                `/dash/devices/${(alert.device as Device)._id}`
-              }
-              sx={{ 
-                color: (theme) => theme.palette.text.primary,
-              }} 
-            >
-              {(alert.device as Device).name}
-            </Link>
-          </Tooltip>
+          />
         )
       },
     },

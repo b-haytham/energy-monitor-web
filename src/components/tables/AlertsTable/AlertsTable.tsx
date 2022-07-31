@@ -1,9 +1,13 @@
-
-import { Tooltip, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid";
+import { Typography } from "@mui/material";
+import { 
+  DataGrid, 
+  GridColDef, 
+  GridRenderCellParams, 
+  GridValueGetterParams 
+} from "@mui/x-data-grid";
 
 import TableOptionsMenu from "../TableOptionsMenu/TableOptionsMenu";
-import Link from "@components/Link";
+import TableLink from "../TableLink";
 
 import { Alert } from "@api/types/alert";
 import { useAppSelector } from "@redux/store";
@@ -47,26 +51,20 @@ const AlertsTable = ({
       },
       renderCell: ({ row }: GridRenderCellParams) => {
         return (
-          <Tooltip
-            title={
+          <TableLink
+            href={
+              loggedInUser?.role.includes('admin') ?
+              `/admin/dash/devices/${row.device._id}` :
+              `/dash/devices/${row.device._id}`
+            }
+            text={row.device.name}
+            tooltip={
               <>
-                <Typography>{row.device.name}</Typography>
+                <Typography fontWeight={'bolder'}>{row.device.name}</Typography>
+                <Typography>{row.device.description}</Typography>
               </>
             }
-          >
-            <Link
-              href={
-                loggedInUser?.role.includes('admin') ?
-                `/admin/dash/devices/${row.device._id}` :
-                `/dash/devices/${row.device._id}`
-              }
-              sx={{ 
-                color: (theme) => theme.palette.text.primary,
-              }} 
-            >
-              {row.device.name}
-            </Link>
-          </Tooltip>
+          />
         )
       },
     },

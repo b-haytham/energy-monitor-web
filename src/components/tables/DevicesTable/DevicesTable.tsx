@@ -1,13 +1,19 @@
 import { useMemo } from "react";
 
-import { Chip, Tooltip, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid";
+import { Chip, Typography } from "@mui/material";
+import { 
+  DataGrid, 
+  GridColDef, 
+  GridRenderCellParams, 
+  GridValueGetterParams 
+} from "@mui/x-data-grid";
 
 import TableOptionsMenu from "../TableOptionsMenu/TableOptionsMenu";
-import Link from "@components/Link";
+import TableLink from "../TableLink";
+
+import { useAppSelector } from "@redux/store";
 
 import { Device } from "@api/types/device";
-import { useAppSelector } from "@redux/store";
 
 interface DevicesTableProps {
   devices: Device[]
@@ -52,23 +58,16 @@ const DevicesTable = ({
           valueGetter: (params: GridValueGetterParams) => params.row.subscription.company_info.name,
           renderCell: ({ row }: GridRenderCellParams) => {
             return (
-              <Tooltip 
-                title={
+              <TableLink 
+                href={`/admin/dash/subscriptions/${row.subscription._id}`}
+                text={row.subscription.company_info.name}
+                tooltip={
                   <>
                     <Typography>{row.subscription.company_info.name}</Typography>
                     <Typography>{row.subscription.company_info.email}</Typography>
                   </>
                 }
-              >
-                <Link 
-                  href={`/admin/dash/subscriptions/${row.subscription._id}`}
-                  sx={{ 
-                    color: (theme) => theme.palette.text.primary,
-                  }} 
-                >
-                  {row.subscription.company_info.name}
-                </Link>
-              </Tooltip>
+              />
             )
           },
         }] : []),
