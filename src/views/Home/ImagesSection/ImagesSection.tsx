@@ -44,7 +44,7 @@ const ImagesSection = ({}: ImagesSectionProps) => {
         style={{ flex: 1, display: 'flex',  justifyContent: 'center', perspective: 1000  }}
       >
         <motion.img
-          src='/dashboard-1.png'
+          src='/images/dashboard-main.png'
           alt="logo"
           style={{ 
             width: '70%', 
@@ -59,7 +59,7 @@ const ImagesSection = ({}: ImagesSectionProps) => {
         // sx={{ flex: 1, display: 'flex', justifyContent: 'center', perspective: 1000  }}
       >
         <motion.img
-          src='/dashboard-2.png'
+          src='/images/dashboard-device.png'
           alt="logo"
           style={{ width: '70%', rotateY: rotate2Y }}
           transition={{}}
