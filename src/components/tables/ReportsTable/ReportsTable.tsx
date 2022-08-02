@@ -19,6 +19,7 @@ import TableLink from "../TableLink";
 import { useAppSelector } from "@redux/store";
 
 import { Report } from "@api/types/reports";
+import { Subscription } from "@api/types/subscription";
 
 const { publicRuntimeConfig }: NextConfig = getConfig();
 const base_url = publicRuntimeConfig!.BASE_URL + '/api';
@@ -84,7 +85,11 @@ const ReportsTable = ({
       flex: 1,
       minWidth: 150,
       valueGetter: (params: GridValueGetterParams) => {
-        return +params.row.cost.toFixed(2);
+        if (loggedInUser && loggedInUser.subscription && (loggedInUser.subscription as Subscription).company_info.currency) {
+          return  +params.row.cost.toFixed(2) + ` ${(loggedInUser.subscription as Subscription).company_info.currency}`;
+        } else {
+          return  +params.row.cost.toFixed(2);
+        }
       }
     },
     {
