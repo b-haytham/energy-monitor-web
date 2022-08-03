@@ -2,6 +2,12 @@ const production = process.env.NODE_ENV == "production";
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   compiler: {
     removeConsole: production,
     emotion: true,
