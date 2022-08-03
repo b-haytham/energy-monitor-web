@@ -59,7 +59,7 @@ const PowerChart = ({ subscription, device }: PowerChartProps) => {
     socket.on(`notification/${device}`, (data) => {
       queryClient.setQueryData(`power-${device}`, (prev) => {
         console.log(prev);
-        const lastArr = prev.length > 20 ? prev.slice(1) : prev;
+        const lastArr = Array.isArray(prev) && prev.length > 20 ? prev.slice(1) : prev as any[];
         return [...lastArr , {t: data.t, v: data.p['p']}]
       })
     
