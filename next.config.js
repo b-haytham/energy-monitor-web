@@ -1,5 +1,9 @@
 const production = process.env.NODE_ENV == "production";
 
+console.log("BASE_URL >>", process.env.BASE_URL);
+console.log("WS_URL >>", process.env.WS_URL);
+console.log("WS_PATH >>", process.env.WS_PATH);
+
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
