@@ -58,7 +58,7 @@ const DevicesOverviewSection = ({ devices: initialDevices, ContainerProps }: Dev
   // }, [devices])
 
   return (
-    <Grid container columnSpacing={2} {...ContainerProps}>
+    <Grid container spacing={2} {...ContainerProps}>
       <Grid item xs={12} md={6}>
         <Paper  sx={{ borderRadius: 2, display: 'flex', flexDirection: 'column', height: 500 }} >
           <Box p={2}>
