@@ -1,4 +1,5 @@
 const production = process.env.NODE_ENV == "production";
+
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
@@ -7,6 +8,11 @@ module.exports = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  async redirects() {
+    return [
+      { source: "/admin", destination: "/admin/dash", permanent: true },
+    ]
   },
   compiler: {
     removeConsole: production,
