@@ -1,7 +1,15 @@
-import CountCard from "@components/cards/CountCard";
-import { AddOutlined } from "@mui/icons-material";
+import { GetServerSideProps } from "next";
+
 import { Box, Grid, Paper, Typography } from "@mui/material";
+import { AddOutlined } from "@mui/icons-material";
+
+import CountCard from "@components/cards/CountCard";
+
 import { useAppSelector } from "@redux/store";
+import { handleServerSidePropsRejection } from "@utils/errors";
+
+import api from "@api";
+import { User } from "@api/types/user";
 
 const Dashboard = ({}) => {
   const subscriptions = useAppSelector(state => state.subscriptions.subscriptions);
@@ -45,6 +53,20 @@ const Dashboard = ({}) => {
       </Paper>
     </Box>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  let user: User;
+  try {
+    user = await api.auth.me({ headers: req.headers });
+    console.log("Server >>", user);
+  } catch (error) {
+    console.error(error);
+    return handleServerSidePropsRejection(error, '/admin/auth/login')
+  }
+  return {
+    props: {}
+  }
 }
 
 export default Dashboard;

@@ -44,12 +44,14 @@ export namespace auth {
     }
   };
 
-  export const me = async () => {
+  export const me = async (params?: { headers?: Record<string, any> }) => {
     try {
-      const { data } = await axios.get(`${base_url}/auth/me`);
+      const { data } = await axios.get(`${base_url}/auth/me`, {
+        headers: params?.headers
+      });
       return data as User;
     } catch (error) {
-      throw new ApiError(error)
+      throw new ApiError(error);
     }
   };
 
