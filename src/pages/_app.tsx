@@ -38,7 +38,7 @@ interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache;
 }
 
-export default function MyApp(props: MyAppProps) {
+function MyApp(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const router = useRouter(); 
 
@@ -88,3 +88,12 @@ export default function MyApp(props: MyAppProps) {
     </CacheProvider>
   );
 }
+
+// make every page server side rendered (to inject runtime config in all pages)
+MyApp.getInitialProps = async (appContext: AppContext) => {
+  const appProps = await App.getInitialProps(appContext);
+
+  return { ...appProps }
+}
+
+export default MyApp;
