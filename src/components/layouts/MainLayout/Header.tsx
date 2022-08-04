@@ -80,7 +80,7 @@ export const Header = ({}: HeaderProps) => {
               style={{ color: typographyColor }} 
               transition={{ type: 'tween' }}
             >
-              Power Monitor
+              Energy Monitor
             </MotionTypography>
           </Stack>
           {/*<Typography variant="h6" color="inherit">

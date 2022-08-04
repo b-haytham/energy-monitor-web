@@ -26,7 +26,7 @@ const Hero = ({}: HeroProps) => {
               textAlign: { xs: 'center', sm: 'center', md: 'start' }
             }} 
           >
-            Power Monitor
+            Energy Monitor
           </Typography>
           <Typography 
             sx={{ 
@@ -100,7 +100,7 @@ const Hero = ({}: HeroProps) => {
   //         p: { xs: 2, sm: 2, md:  10 }
   //       }}
   //     >
-  //       <Typography variant="h1" fontSize={55} /* color="common.white" */>Power Monitor</Typography>
+  //       <Typography variant="h1" fontSize={55} /* color="common.white" */>Energy Monitor</Typography>
   //       <Typography sx={{ ml: 0.7, my: 5, mr: 5, maxWidth: { md: 500 }  }} variant="body1" fontSize={25} /* color="common.white" */>
   //         Energy Management Software solutions to process, analyze, store and share energy usage and status informations.
   //       </Typography>

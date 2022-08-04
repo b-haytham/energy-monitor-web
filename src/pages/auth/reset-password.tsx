@@ -68,7 +68,7 @@ const ResetPassword = ({}: ResetPasswordProps) => {
               height={50} 
               whileHover={{ rotate: 360 }} 
             /> 
-            <Typography variant="subtitle2" fontSize={18} fontWeight={'bold'}>Power Monitor</Typography>
+            <Typography variant="subtitle2" fontSize={18} fontWeight={'bold'}>Energy Monitor</Typography>
           </Stack>
         </Box>
         <Typography variant="h4" component="h1" >Reset Password</Typography>

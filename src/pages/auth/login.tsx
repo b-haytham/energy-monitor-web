@@ -51,7 +51,7 @@ const Login = ({}: LoginProps) => {
     <Grid container sx={{ minHeight: '100vh' }}>
       <Grid item xs={12} sm={12} md={6}  sx={{ p: { xs: 3, sm: 10 ,md: 10 } }}  alignSelf={'center'}>
         <Box sx={{ my: 'auto' }}>
-          <Typography variant="h3" component="h1">Login To Power Monitor</Typography>
+          <Typography variant="h3" component="h1">Login To Energy Monitor</Typography>
           <Typography variant="subtitle2" component="p">Please provide your credentials</Typography>
 
           <Box sx={{ mt: 4 }}>

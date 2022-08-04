@@ -17,7 +17,7 @@ const FeaturesSection = ({}: FeaturesSectionProps) => {
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography sx={{ mb: 2 }} variant="h2"> What Power Monitor really is ?</Typography>
+        <Typography sx={{ mb: 2 }} variant="h2"> What Energy Monitor really is ?</Typography>
         <Typography variant="body1" fontSize={25}> Features Provided </Typography>
       </Box>
       <Grid container spacing={2} sx={{ mt: 3, px: {xs: 2, sm: 5, md: 5, lg: 25 }}}>  
