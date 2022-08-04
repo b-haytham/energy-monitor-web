@@ -2,7 +2,8 @@ import "../styles/globals.css";
 
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { AppProps } from 'next/app';
+import App, { AppContext, AppProps } from 'next/app';
+
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { CacheProvider, EmotionCache } from '@emotion/react';
@@ -89,7 +90,7 @@ function MyApp(props: MyAppProps) {
   );
 }
 
-// make every page server side rendered (to inject runtime config in all pages)
+// make every page server side rendered (to inject runtime envirement variables in all pages)
 MyApp.getInitialProps = async (appContext: AppContext) => {
   const appProps = await App.getInitialProps(appContext);
 
