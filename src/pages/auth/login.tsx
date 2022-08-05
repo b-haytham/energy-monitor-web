@@ -49,7 +49,7 @@ const Login = ({}: LoginProps) => {
 
   return (
     <Grid container sx={{ minHeight: '100vh' }}>
-      <Grid item xs={12} sm={12} md={6}  sx={{ p: { xs: 3, sm: 10 ,md: 10 } }}  alignSelf={'center'}>
+      <Grid item xs={12} sm={12} md={4}  sx={{ p: { xs: 3, sm: 10 ,md: 10 } }}  alignSelf={'center'}>
         <Box sx={{ my: 'auto' }}>
           <Typography variant="h3" component="h1">Login To Energy Monitor</Typography>
           <Typography variant="subtitle2" component="p">Please provide your credentials</Typography>
@@ -107,7 +107,7 @@ const Login = ({}: LoginProps) => {
         item 
         xs={0} 
         sm={0} 
-        md={6} 
+        md={8} 
         sx={{ 
           bgcolor: (theme) => theme.palette.grey[50]
         }}

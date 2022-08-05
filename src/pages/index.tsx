@@ -16,7 +16,8 @@ const Home: NextPage = () => {
       <Box sx={{ flexGrow: 1 }}>
 
         {/* --------------------*/}
-        <Hero />
+        <Hero /> 
+        {/* <HeroWithBackground /> */ }
         {/* --------------------*/}
 
         {/* --------------------*/}
