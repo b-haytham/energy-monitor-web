@@ -16,8 +16,8 @@ const Hero = ({}: HeroProps) => {
         pt: { xs: 10, sm: 10, md: 0 }
       }}
     >
-      <Grid item xs={12} sm={12} md={6} alignSelf={'center'} justifyItems="center">
-        <Stack alignItems={'center'}>
+      <Grid item xs={12} sm={12} md={6} alignSelf={'center'} justifyItems="start">
+        <Stack alignItems={'start'}>
           <Box>
           <Typography 
             variant="h1" 
@@ -39,7 +39,7 @@ const Hero = ({}: HeroProps) => {
             variant="body1" 
             fontSize={25}
           >
-             Energy Management Software solutions to process, analyze, store and share energy usage and status informations.
+             Energy Management Software solutions to process, analyze, store and share energy usage.
           </Typography>
           <Stack 
             direction="row" 
@@ -66,7 +66,7 @@ const Hero = ({}: HeroProps) => {
         </Stack>
       </Grid>
       <Grid item xs={12} sm={12} md={6} alignSelf={'center'} justifyItems="center">
-        <Stack alignItems="center">
+        <Stack alignItems="end">
            <motion.img
              src='/logo.svg'
              alt="logo"
@@ -82,69 +82,6 @@ const Hero = ({}: HeroProps) => {
       </Grid>
     </Grid>
   )
-  // return (
-  //   <Stack 
-  //     alignItems="center" 
-  //     sx={{ 
-  //       flexDirection: { xs: 'column-reverse', sm: 'column-reverse', md: 'row' },
-  //       minHeight: '100vh', 
-  //       position: 'relative', 
-  //       justifyContent: 'center',
-  //       pt: { xs: '60px', sm: '60px', md: 0 },
-  //       // bgcolor: '#020c36' 
-  //     }}
-  //   >
-  //     <Box 
-  //       sx={{ 
-  //         flex: .6, 
-  //         p: { xs: 2, sm: 2, md:  10 }
-  //       }}
-  //     >
-  //       <Typography variant="h1" fontSize={55} /* color="common.white" */>Energy Monitor</Typography>
-  //       <Typography sx={{ ml: 0.7, my: 5, mr: 5, maxWidth: { md: 500 }  }} variant="body1" fontSize={25} /* color="common.white" */>
-  //         Energy Management Software solutions to process, analyze, store and share energy usage and status informations.
-  //       </Typography>
-  //       <Button 
-  //         variant="text" 
-  //         size="large"
-  //         // color="inherit"
-  //         sx={{
-  //           // mt: 5,
-  //           // color: 'black',
-  //           borderRadius: 2,
-  //           fontSize: 25
-  //         }}
-  //         endIcon={<ArrowForwardOutlined />}
-  //       >  
-  //         Learn More
-  //       </Button>
-  //     </Box>
-  //     <Box 
-  //       sx={{ 
-  //         flex: .4, 
-  //         display: 'flex', 
-  //         justifyContent: 'center', 
-  //         perspective: 1000,
-  //         px: 5,
-  //       }}
-  //     >
-  //       <Box sx={{ }}>
-  //         <motion.img
-  //           src='/logo.svg'
-  //           alt="logo"
-  //           style={{
-  //             // width: '80%'
-  //           }}
-  //           animate={{ 
-  //             scale: [.9, 1, .9],
-  //           }}
-  //           transition={{ repeat: Infinity, duration: 6 }}
-  //         />
-  //       </Box>
-  //     </Box>
-  //     <CurveShapeDivider />
-  //   </Stack>
-  // )
 }
 
 export default Hero;

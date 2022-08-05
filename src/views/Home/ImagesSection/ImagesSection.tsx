@@ -81,7 +81,7 @@ const ImagesSection = ({}: ImagesSectionProps) => {
         }}
       >
         <Typography variant="h3" textAlign="center" sx={{ mb: 5 }}>
-          Elegant Dashboad makes you closer to your machines
+          All in one dashboard view
         </Typography>
 
         <Typography variant="body1" fontSize={25} textAlign="center">
