@@ -1,4 +1,6 @@
 import { Subscription } from "@api/types/subscription";
+import Link from "@components/Link";
+import { WarningOutlined } from "@mui/icons-material";
 import { 
   Button, 
   Stack, 
@@ -10,7 +12,8 @@ import {
   InputLabel, 
   MenuItem,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Typography
 } from "@mui/material";
 import { useAppSelector } from "@redux/store";
 
@@ -24,9 +27,9 @@ interface SubscriptionFormProps {
 
 const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFormProps) => {
   const users = useAppSelector((state) => {
-    if(initialValues) {
+    if (initialValues) {
       return state.users.users.filter((user) => user.role.includes('user'));
-    }else {
+    } else {
       return state.users.users
       .filter((user) => user.role.includes("user") && !user.subscription)
     }
@@ -45,7 +48,7 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
             city: initialValues?.company_info?.address?.city ?? "",
             state: initialValues?.company_info?.address?.state ?? "",
             zip: initialValues?.company_info?.address?.zip ?? 0,
-            country: "Tunisie"
+            country: initialValues?.company_info?.address?.country ?? "", 
           }
         },
         blocked: initialValues?.blocked ?? false,
@@ -65,12 +68,23 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
     // });
     onSubmit(data);
   }
+  
+  const formDisabled = users.length == 0;
 
   return (
     <Box sx={{ mt: 1 }}>
-      <form onSubmit={handleSubmit(onSubmitForm)}>
+      {formDisabled && (
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}> 
+          <WarningOutlined color="error"/>
+          <Typography variant="body2">
+            To Create subscription first you need to create an 
+            <Link sx={{ mx: 1 }} href="/admin/dash/users"><strong>Administrator</strong></Link> with role <strong>Super User</strong>
+          </Typography>
+        </Stack>
+      )}
 
-        <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+      <form onSubmit={handleSubmit(onSubmitForm)}>
+        <FormControl fullWidth size="small" sx={{ mb: 2 }} disabled={formDisabled}>
           <InputLabel id="admin-label">Administrateur</InputLabel>
           <Select
             id="admin"
@@ -90,7 +104,7 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
           </Select>
         </FormControl>
 
-        <Divider sx={{ mb: 1 }} />
+        <Divider sx={{ mb: 2 }} />
 
         <TextField 
           id="name"
@@ -98,8 +112,9 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
           variant="outlined" 
           required
           fullWidth
+          disabled={formDisabled}
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('company_info.name' )}
         />
 
@@ -108,9 +123,10 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
           label="Email"
           variant="outlined" 
           required
+          disabled={formDisabled}
           fullWidth
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('company_info.email' )}
         />
 
@@ -120,22 +136,23 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
           variant="outlined" 
           required
           fullWidth
+          disabled={formDisabled}
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('company_info.phone' )}
         />
        
-        <Divider sx={{ mb: 1 }} />
+        <Divider sx={{ mb: 2 }} />
 
         <TextField 
           id="country"
           label="Country"
           variant="outlined" 
           required
+          disabled={formDisabled}
           fullWidth
           size="small"
-          disabled
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('company_info.address.country' )}
         />
 
@@ -145,9 +162,10 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
             label="State"
             variant="outlined" 
             required
+            disabled={formDisabled}
             fullWidth
             size="small"
-            sx={{ mb: 1 }}
+            sx={{ mb: 2 }}
             {...register('company_info.address.state' )}
           />
 
@@ -155,10 +173,11 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
             id="city"
             label="City"
             variant="outlined" 
+          disabled={formDisabled}
             required
             fullWidth
             size="small"
-            sx={{ mb: 1 }}
+            sx={{ mb: 2 }}
             {...register('company_info.address.city' )}
           />
         </Stack>
@@ -169,9 +188,10 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
             label="Street"
             variant="outlined" 
             required
+            disabled={formDisabled}
             fullWidth
             size="small"
-            sx={{ mb: 1, flex: 2 }}
+            sx={{ mb: 2, flex: 2 }}
             {...register('company_info.address.street' )}
           />
 
@@ -180,20 +200,20 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
             label="Postal Code"
             variant="outlined" 
             required
+            disabled={formDisabled}
             fullWidth
             size="small"
             type={'number'}
-            sx={{ mb: 1, flex: 1 }}
+            sx={{ mb: 2, flex: 1 }}
             {...register('company_info.address.zip' )}
           />
         </Stack>
-
-        <Divider sx={{ mt: 1  }} />
 
         {initialValues && (
           <>
             <FormControlLabel
               value="end"
+              disabled={formDisabled}
               control={
                 <Checkbox 
                   checked={watch('blocked')} 
@@ -203,9 +223,9 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
               label="Blocked"
               labelPlacement="end"
             /> 
-            <Divider sx={{ mb: 1 }} />
           </>
         )}
+        <Divider sx={{ mb: 2 }} />
         <Stack spacing={1} direction='row'> 
           <Button
             variant="outlined" 
@@ -218,6 +238,7 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
           <Button 
             type="submit" 
             variant="outlined" 
+            disabled={formDisabled}
             color="primary"
             sx={{ flex: 1 }}
           >

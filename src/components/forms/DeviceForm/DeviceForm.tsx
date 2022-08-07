@@ -12,13 +12,16 @@ import {
   RadioGroup, 
   Select, 
   Stack, 
-  TextField 
+  TextField, 
+  Typography
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 
 import { useAppSelector } from "@redux/store";
 import { Subscription } from "@api/types/subscription";
 import { Device } from "@api/types/device";
+import { WarningOutlined } from "@mui/icons-material";
+import Link from "@components/Link";
 
 interface DeviceFormProps {
   onSubmit: (data: any) => void;
@@ -42,12 +45,21 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
     onSubmit(data);
   }
 
-  console.log(watch("type"));
+  const formDisabled = subscriptions.length == 0;
+
   return (
     <Box sx={{ mt: 1 }}>
+      {formDisabled && (
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}> 
+          <WarningOutlined color="error"/>
+          <Typography variant="body2">
+            To Create a new device first you need to create a 
+            <Link sx={{ mx: 1 }} href="/admin/dash/subscriptions"><strong>Subscription</strong></Link>
+          </Typography>
+        </Stack>
+      )}
       <form onSubmit={handleSubmit(onSubmitForm)}>
-
-        <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+        <FormControl disabled={formDisabled} fullWidth size="small" sx={{ mb: 2 }}>
           <InputLabel id="admin-label">Subscription</InputLabel>
           <Select
             id="subscription"
@@ -67,7 +79,7 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
           </Select>
         </FormControl>
 
-        <Divider sx={{ mb: 1 }} />
+        <Divider sx={{ mb: 2 }} />
 
         <TextField 
           id="name"
@@ -75,8 +87,9 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
           variant="outlined" 
           required
           fullWidth
+          disabled={formDisabled}
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('name' )}
         />
 
@@ -86,14 +99,18 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
           variant="outlined" 
           required
           fullWidth
+          disabled={formDisabled}
           size="small"
-          sx={{ mb: 1 }}
+          sx={{ mb: 2 }}
           {...register('description' )}
         />
 
 
-        <Divider sx={{ mb: 1 }} />
-        <FormControl sx={{ ml: 1 }}>
+        <Divider sx={{ mb: 2 }} />
+        <FormControl 
+          sx={{ ml: 1, mb: 2 }}
+          disabled={formDisabled}
+        >
           <FormLabel id="device-type-lable">Type</FormLabel>
           <RadioGroup
             row
@@ -108,12 +125,11 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
           </RadioGroup>
         </FormControl>
 
-        <Divider sx={{ mt: 1 }} />
 
         {initialValues && (
-          <>
+          <Box>
             <FormControlLabel
-              value="end"
+              value="start"
               control={
                 <Checkbox 
                   checked={watch('blocked')} 
@@ -121,12 +137,13 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
                 />
               }
               label="Blocked"
-              labelPlacement="end"
+              labelPlacement="start"
+              componentsProps={{ typography: { color: 'text.secondary' } }}
+              sx={{ fontSize: 18, mx: 1, mb: 2 }}
             /> 
-            <Divider sx={{ mb: 1 }} />
-          </>
+          </Box>
         )}
-
+        <Divider sx={{ mb: 2 }} />
         <Stack spacing={1} direction='row'> 
           <Button
             variant="outlined" 
@@ -140,6 +157,7 @@ const DeviceForm = ({ onSubmit, onCancel, initialValues }: DeviceFormProps) => {
             type="submit" 
             variant="outlined" 
             color="primary"
+            disabled={formDisabled}
             sx={{ flex: 1 }}
           >
             Submit 
