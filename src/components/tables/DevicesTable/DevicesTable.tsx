@@ -126,7 +126,7 @@ const DevicesTable = ({
         }
       },
     ]
-  }, [loggedInUser, devices])
+  }, [loggedInUser, devices, onView, onEdit, onDelete])
 
 
   return (

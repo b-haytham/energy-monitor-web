@@ -1,5 +1,7 @@
 import { Alert, AlertCondition } from "@api/types/alert";
 import { Device } from "@api/types/device";
+import Link from "@components/Link";
+import { WarningOutlined } from "@mui/icons-material";
 import { Box, Button, Divider, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { useAppSelector } from "@redux/store";
 import { useState } from "react";
@@ -37,10 +39,23 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
     data.if.value = +data.if.value
     onSubmit(data);
   }
+  
+  const formDisabled = devices.length === 0;
+
   return (
     <Box sx={{ mt: 1 }}>
+      {formDisabled && (
+        <Stack direction="row" spacing={1} sx={{ mb: 2 }}> 
+          <WarningOutlined color="error"/>
+          <Typography variant="body2">
+            To Create subscription first you need to create a 
+            <Link sx={{ mx: 1 }} href="/admin/dash/devices"><strong>Device</strong></Link>
+          </Typography>
+        </Stack>
+      )}
+
       <form onSubmit={handleSubmit(onSubmitForm)}>
-        <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+        <FormControl fullWidth size="small" disabled={formDisabled} sx={{ mb: 1 }}>
           <InputLabel id="device-label">Device</InputLabel>
           <Select
             id="device"
@@ -67,7 +82,7 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
         <Divider sx={{ mb: 1 }} />
         <Typography sx={{ ml: 1, mb: 1 }} variant="h6"> IF </Typography>
          
-        <FormControl fullWidth size="small" sx={{ mb: 2 }}>
+        <FormControl fullWidth size="small" disabled={formDisabled} sx={{ mb: 2 }}>
           <InputLabel id="value-label">Value name</InputLabel>
           <Select
             id="value_name"
@@ -88,7 +103,7 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
         </FormControl>
 
         <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
-          <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+          <FormControl fullWidth size="small" disabled={formDisabled} sx={{ mb: 1 }}>
             <InputLabel id="condition-label">Condition</InputLabel>
             <Select
               id="condition"
@@ -109,7 +124,13 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
             </Select>
           </FormControl>
 
-          <TextField id="value" label="Value" type="number"  {...register('if.value')} />
+          <TextField 
+            id="value" 
+            label="Value" 
+            type="number"   
+            disabled={formDisabled}
+            {...register('if.value')} 
+          />
         </Stack>
 
         <Stack spacing={1} direction='row'> 
@@ -124,6 +145,7 @@ const AlertForm = ({ onSubmit, onCancel, initialValues }: AlertFormProps) => {
           <Button 
             type="submit" 
             variant="outlined" 
+            disabled={formDisabled}
             color="primary"
             sx={{ flex: 1 }}
           >
