@@ -89,7 +89,7 @@ const SubscriptionForm = ({ onSubmit, onCancel, initialValues } : SubscriptionFo
           <Select
             id="admin"
             labelId="admin-label"
-            label="Administrateur"
+            label="Administrator"
             value={watch("admin")}
             onChange={(e) => setValue("admin", e.target.value)}
           >
