@@ -1,20 +1,32 @@
+import { useState } from "react";
 import { useSnackbar } from "notistack";
 import { useClipboard } from "@mantine/hooks";
 
-import { Grid, IconButton, List, ListItem, ListItemText, Paper } from "@mui/material";
-import { CopyAllOutlined } from "@mui/icons-material";
+import { 
+  Divider, 
+  Grid, 
+  IconButton, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  Paper, 
+  Stack 
+} from "@mui/material";
+import { CopyAllOutlined, VisibilityOffOutlined, VisibilityOutlined } from "@mui/icons-material";
 
 import { Device } from "@api/types/device";
 import { Subscription } from "@api/types/subscription";
 
 interface DeviceInfoProps {
   device: Device;
-  token?: string
+  token?: string;
 }
 
 const DeviceInfo = ({ device, token }: DeviceInfoProps) => {
   const clipboard = useClipboard();
   const { enqueueSnackbar } = useSnackbar();
+  const [tokenVisible, setTokenVisible] = useState(false);
+
   return (
     <Paper variant="outlined" sx={{ borderRadius: 2, mt: 2, p: 2 }}>
       <Grid container>
@@ -56,9 +68,28 @@ const DeviceInfo = ({ device, token }: DeviceInfoProps) => {
             </ListItem>
           </List>
         </Grid>
-
         <Grid item xs={12} md={6}>
           <List dense disablePadding>
+            <ListItem 
+              disablePadding
+              secondaryAction={
+                <IconButton 
+                  size="small" 
+                  onClick={() => {
+                    clipboard.copy((device.subscription as Subscription)._id)
+                    enqueueSnackbar('Subscription ID copied', { variant: 'success' })
+                  }}
+                >
+                  <CopyAllOutlined fontSize="small" />
+                </IconButton>
+              }
+            >
+              <ListItemText
+                primaryTypographyProps={{ variant: 'subtitle2' }}
+                primary="Subscription ID" 
+                secondary={(device.subscription as Subscription)._id} 
+              />
+            </ListItem>
             <ListItem 
               disablePadding
               secondaryAction={
@@ -89,23 +120,38 @@ const DeviceInfo = ({ device, token }: DeviceInfoProps) => {
           </List>
         </Grid>
       </Grid>
+      <Divider sx={{ my: 2 }} />
       {token && <ListItem 
         disablePadding 
+        sx={{ alignItems: 'start' }}
         secondaryAction={
-          <IconButton 
-            size="small" 
-            onClick={() => {
-              clipboard.copy(token)
-              enqueueSnackbar('Device token copied', { variant: 'success' })
-            }}
-          >
-            <CopyAllOutlined fontSize="small" />
-          </IconButton>
+          <Stack direction="column" spacing={1}>
+            <IconButton 
+              size="small" 
+              onClick={() => setTokenVisible((prev) => !prev)}
+            >
+              {tokenVisible ? <VisibilityOffOutlined fontSize="small" /> : <VisibilityOutlined fontSize="small" /> }
+            </IconButton>
+            <IconButton 
+              size="small" 
+              onClick={() => {
+                clipboard.copy(token)
+                enqueueSnackbar('Device token copied', { variant: 'success' })
+              }}
+            >
+              <CopyAllOutlined fontSize="small" />
+            </IconButton>
+          </Stack>
         }
       >
         <ListItemText 
           primaryTypographyProps={{ variant: 'subtitle2' }}
-          secondaryTypographyProps={{  sx: { width: { xs: 250, sm: 350, md: 600, lg: 1200 } } }}
+          secondaryTypographyProps={{ 
+            sx: { 
+              width: { xs: 250, sm: 350, md: 600, lg: 1200 },
+              filter: !tokenVisible ? 'blur(2px)' : undefined 
+            }
+          }}
           primary="Token" 
           secondary={token} 
           sx={{ width: 100, wordWrap: 'break-word' }}

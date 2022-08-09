@@ -118,7 +118,7 @@ const SideBar = ({ open }: SideBarProps) => {
 
           {userRole && userRole != 'user' && <SideBarListItem
             selected={router.pathname.includes("dash") && router.pathname.includes("users")}
-            text="User"
+            text="Users"
             icon={<PeopleAltOutlinedIcon />}
             onClick={() => {
               if(userRole && userRole.includes("admin")) {

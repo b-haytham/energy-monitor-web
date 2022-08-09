@@ -53,6 +53,8 @@ const DevicesOverviewSection = ({ devices: initialDevices, ContainerProps }: Dev
     }
   }) 
 
+  useEffect(() => { setDevices(initialDevices) }, [initialDevices])
+
   // useEffect(() => {
   //   fuse.current = new Fuse(devices, { keys: ['name', 'description'] })
   // }, [devices])
