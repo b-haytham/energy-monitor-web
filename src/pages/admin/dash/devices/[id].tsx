@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps, NextPage } from 'next';
 
-import { Box, IconButton, Paper, Stack, Typography } from '@mui/material'
+import { Box, IconButton, Stack } from '@mui/material'
 
 import { ArrowDownwardOutlined, ArrowUpwardOutlined, EditOutlined } from '@mui/icons-material';
 
@@ -12,8 +12,11 @@ import EnergieConsumptionChart from '@components/charts/EnergieConsumptionChart'
 import PowerChart from '@components/charts/PowerChart';
 import ChartContainer from '@views/ChartContainer';
 import HorizontalScroll from '@components/HorizontalScroll';
+import DeviceInfo from '@views/DeviceInfo';
+import { DeviceFormDialog } from '@components/forms/DeviceForm';
 
 import { useDeviceDetails } from 'src/hooks/useDeviceDetails';
+import { useDisclosure } from '@mantine/hooks';
 
 import { handleServerSidePropsRejection } from '@utils/errors';
 
@@ -21,9 +24,6 @@ import socket from 'src/socket';
 
 import api from '@api';
 import { Device } from '@api/types/device';
-import { useDisclosure } from '@mantine/hooks';
-import { DeviceFormDialog } from '@components/forms/DeviceForm';
-import DeviceInfo from '@views/DeviceInfo';
 
 interface DeviceDetailProps {
   device: Device
@@ -38,7 +38,7 @@ const DeviceDetail: NextPage<DeviceDetailProps> = ({ device: serverDevice }) => 
 
   const [updateOpen, updateHandlers] = useDisclosure(false);
 
-  const fetchToken = async() => {
+  const fetchToken = async () => {
     try {
       const data = await api.auth.createDeviceToken(device._id);
       setToken(data.access_token);
