@@ -130,7 +130,7 @@ const SubscriptionInfo = ({ subscription }: SubscriptionInfoProps) => {
       
       <Box sx={{ mt: 2 }}>
         <Typography variant="body2" fontSize={18} fontWeight={'bold'} sx={{ mb: 2 }}>Devices</Typography>
-        {subscription.devices.length == 0 && (<Typography>Not Devices</Typography>)}
+        {subscription.devices.length == 0 && (<Typography>No Devices</Typography>)}
         <HorizontalScroll spacing={2}>
           {(subscription.devices as Device[]).map(device => (
             <Link 
@@ -154,7 +154,7 @@ const SubscriptionInfo = ({ subscription }: SubscriptionInfoProps) => {
 
       <Box sx={{ mt: 2 }}>
         <Typography variant="body2" fontSize={18} fontWeight={'bold'} sx={{ mb: 2 }}>User</Typography>
-        {subscription.users.length == 0 && (<Typography>Not Users</Typography>)}
+        {subscription.users.length == 0 && (<Typography>No Users</Typography>)}
         <HorizontalScroll spacing={2}>
           {(subscription.users as User[]).map(user => (
             <Link 
