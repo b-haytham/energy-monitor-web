@@ -1,14 +1,7 @@
 # Energie Web 
 
-## Description
-nextjs application for energie comsumption
+This is a dashboard to visualize energy use of connected devices. built with [Nextjs](https://nextjs.org/) framework and [Mui](https://mui.com/) ui library. 
 
-## Getting started
+Checkout [Energy Monitor](https://github.com/b-haytham/energy-monitor) application for more information.
 
-Install it and run:
-
-```sh
-npm install
-npm run dev
-```
 
