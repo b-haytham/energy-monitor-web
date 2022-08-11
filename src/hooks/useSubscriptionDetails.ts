@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAppDispatch } from "@redux/store";
 import { createDevice as storeCreateDevice } from '@redux/devices/actions';
 import { createUser as storeCreateUser } from '@redux/users/actions';
+import { updateSubscription as storeUpdateSubscription } from '@redux/subscriptions/actions';
 
 import { Subscription } from "@api/types/subscription";
 import { User } from "@api/types/user";
@@ -50,9 +51,27 @@ export const useSubscriptionDetails = (initialSubscription: Subscription) => {
     }
   }
 
+  const updateSubscription = async (data: any) => {
+    try {
+      const subscription = await dispatch(storeUpdateSubscription(data)).unwrap();
+    
+      setSubscription((prev) => ({
+        ...subscription,
+        users,
+        devices
+      } as Subscription))
+  
+
+      return subscription;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   const handlers = {
     createDevice,
     createUser,
+    updateSubscription,
   }
 
   return { subscription, admin, users, devices, handlers };

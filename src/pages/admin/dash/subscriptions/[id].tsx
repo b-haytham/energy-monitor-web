@@ -115,7 +115,7 @@ const SubscriptionDetail = ({ subscription: serverSubscription }: SubscriptionDe
 
   const [showMore, setShowMore] = useState(false); 
   
-  const [updateOpen, updateHandlers] = useDisclosure(false)
+  const [updateSubscriptionOpen, updateSubscriptionHandlers] = useDisclosure(false)
 
   const [createDeviceOpen, createDeviceHandlers] = useDisclosure(false)
   const [createUserOpen, createUserHandlers] = useDisclosure(false)
@@ -160,11 +160,20 @@ const SubscriptionDetail = ({ subscription: serverSubscription }: SubscriptionDe
       />
 
       <SubscriptionFormDialog 
-        open={updateOpen}
-        onClose={updateHandlers.close}
+        open={updateSubscriptionOpen}
+        onClose={updateSubscriptionHandlers.close}
         initialValues={subscription}
-        onSubmit={(data) => {
-          console.log("Update >>",data);
+        onSubmit={async (data) => {
+          console.log(data)
+          try {
+            const updatedSubscription = await handlers.updateSubscription({_id: subscription._id, ...data});
+            console.log('Subscription >>> ', updatedSubscription);
+            updateSubscriptionHandlers.close();
+            enqueueSnackbar("Subscription successfully created.", { variant: 'success' })
+          } catch (error: any) {
+            console.error(error);
+            enqueueSnackbar(`Failed to update subscription: ${error.message}`, { variant: 'error' })
+          }
         }}
       />
       <PageHeader 
@@ -172,7 +181,7 @@ const SubscriptionDetail = ({ subscription: serverSubscription }: SubscriptionDe
         onBack={() => router.back()} 
         right={
           <Stack direction={"row"} spacing={2}>
-            <IconButton size={'small'} onClick={() => updateHandlers.open()}>
+            <IconButton size={'small'} onClick={updateSubscriptionHandlers.open}>
               <EditOutlined />
             </IconButton>
 
