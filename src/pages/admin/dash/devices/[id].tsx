@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps, NextPage } from 'next';
+import { useSnackbar } from 'notistack';
 
 import { Box, IconButton, Stack } from '@mui/material'
 
@@ -31,12 +32,13 @@ interface DeviceDetailProps {
 
 const DeviceDetail: NextPage<DeviceDetailProps> = ({ device: serverDevice }) => {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar()
   const { device, subscription, values, handlers } = useDeviceDetails(serverDevice); 
   const [token, setToken] = useState<string | null>(null)
   const [showMore, setShowMore] = useState(false); 
   
 
-  const [updateOpen, updateHandlers] = useDisclosure(false);
+  const [updateDeviceOpen, updateDeviceHandlers] = useDisclosure(false);
 
   const fetchToken = async () => {
     try {
@@ -62,11 +64,20 @@ const DeviceDetail: NextPage<DeviceDetailProps> = ({ device: serverDevice }) => 
   return (
     <Box>
       <DeviceFormDialog 
-        open={updateOpen}
-        onClose={updateHandlers.close}
+        open={updateDeviceOpen}
+        onClose={updateDeviceHandlers.close}
         initialValues={device}
-        onSubmit={(values) => {
+        onSubmit={async (data) => {
           console.log(values);
+          try {
+            const updatedDevice = await handlers.updateDevice({ _id: device._id, ...data });
+            console.log('Device >>>>', updatedDevice);
+            updateDeviceHandlers.close();
+            enqueueSnackbar(`Device updated successfully`, { variant: 'success' });
+          } catch (error: any) {
+            console.error(error);
+            enqueueSnackbar(`Failed to update device: ${error.message}`, { variant: 'error' })
+          }
         }}
       />
       <PageHeader
@@ -74,7 +85,7 @@ const DeviceDetail: NextPage<DeviceDetailProps> = ({ device: serverDevice }) => 
         onBack={() => router.back()}
         right={
           <Stack direction={"row"} spacing={2}>
-            <IconButton size={'small'} onClick={updateHandlers.open}>
+            <IconButton size={'small'} onClick={updateDeviceHandlers.open}>
               <EditOutlined />
             </IconButton>
 
