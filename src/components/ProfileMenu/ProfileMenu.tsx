@@ -48,7 +48,7 @@ const ProfileMenu = ({}: ProfileMenuProps) => {
         }}
       >
         <Box sx={{ p: 2 }}>
-          <Typography variant="h6">Welcome to engy !</Typography>
+          <Typography variant="h6">Welcome to energy monitor !</Typography>
           <Typography variant="caption">{loggedInUser?.email ?? ""}</Typography>
         </Box>
         <Divider />
